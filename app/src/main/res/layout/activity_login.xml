@@ -195,18 +195,18 @@
             tools:layout_editor_absoluteX="170dp"
             tools:layout_editor_absoluteY="623dp" />
 
-        <ImageButton
-            android:id="@+id/facebookButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:background="@null"
-            android:contentDescription="@string/fb_btn_text"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            app:srcCompat="@drawable/facebook"
-            tools:layout_editor_absoluteX="170dp"
-            tools:layout_editor_absoluteY="623dp" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/facebookButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="24dp"-->
+<!--            android:background="@null"-->
+<!--            android:contentDescription="@string/fb_btn_text"-->
+<!--            android:minWidth="48dp"-->
+<!--            android:minHeight="48dp"-->
+<!--            app:srcCompat="@drawable/facebook"-->
+<!--            tools:layout_editor_absoluteX="170dp"-->
+<!--            tools:layout_editor_absoluteY="623dp" />-->
 
         <ImageButton
             android:id="@+id/twitterButton"

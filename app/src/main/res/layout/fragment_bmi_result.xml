@@ -45,15 +45,32 @@
                     android:text="Rekomendasi nutrisi lebih pas sesuai kebutuhanmu."
                     android:textAlignment="center" />
 
-                <Button
-                    android:id="@+id/confirmBtn"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/teal_700"
-                    android:text="Selesai" />
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="8dp">
+                    <Button
+                        android:id="@+id/backBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginBottom="24dp"
+                        android:backgroundTint="@color/grey"
+                        android:text="Kembali"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/confirmBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginBottom="24dp"
+                        android:backgroundTint="@color/teal_700"
+                        android:text="Selesai"
+                        android:layout_weight="1"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

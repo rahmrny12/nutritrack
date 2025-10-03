@@ -29,6 +29,8 @@ import com.example.nutritrack.ui.login.LoginViewModel;
 import com.example.nutritrack.ui.login.LoginViewModelFactory;
 import com.example.nutritrack.databinding.ActivityLoginBinding;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
@@ -38,9 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toast.makeText(this, "onCreate called", Toast.LENGTH_SHORT).show();
-
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -125,34 +125,6 @@ public class LoginActivity extends AppCompatActivity {
                         passwordEditText.getText().toString());
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Biasanya untuk inisialisasi resource (misalnya register broadcast receiver)
-        Toast.makeText(this, "onStart called", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // App kembali aktif / di foreground
-        Toast.makeText(this, "onResume called", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // App berhenti sebentar (misalnya buka activity lain)
-        Toast.makeText(this, "onPause called", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Activity tidak terlihat lagi (background)
-        Toast.makeText(this, "onStop called", Toast.LENGTH_SHORT).show();
     }
 
     private void updateUiWithUser(LoggedInUserView model) {

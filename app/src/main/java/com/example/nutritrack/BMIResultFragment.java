@@ -59,6 +59,6 @@ public class BMIResultFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_b_m_i_result, container, false);
+        return inflater.inflate(R.layout.fragment_bmi_result, container, false);
     }
 }

@@ -14,7 +14,7 @@
     <string name="fb_btn_text">Tombol Facebook</string>
     <string name="google_btn_text">Tombol Google</string>
     <string name="logo_nutritrack_text">Logo NutriTrack</string>
-    <string name="login_heading">LOGIN</string>
+    <string name="login_heading">MASUK</string>
     <string name="x_btn_text">Tombol X</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
