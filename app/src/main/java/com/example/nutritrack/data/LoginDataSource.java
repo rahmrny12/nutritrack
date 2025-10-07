@@ -1,5 +1,8 @@
 package com.example.nutritrack.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.example.nutritrack.data.model.LoggedInUser;
 
 import java.io.IOException;
@@ -9,15 +12,34 @@ import java.io.IOException;
  */
 public class LoginDataSource {
 
-    public Result<LoggedInUser> login(String username, String password) {
+    private Context context;
+    private SharedPreferences sharedPref;
 
+    // Add constructor to receive Context
+    public LoginDataSource(Context context) {
+        this.context = context;
+        this.sharedPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+    }
+
+    public Result<LoggedInUser> login(String username, String password) {
         try {
-            // TODO: handle loggedInUser authentication
-            LoggedInUser fakeUser =
-                    new LoggedInUser(
-                            java.util.UUID.randomUUID().toString(),
-                            "Jane Doe");
-            return new Result.Success<>(fakeUser);
+            // Get user data from SharedPreferences
+            SharedPreferences sharedPref = context.getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+
+            String savedUsername = sharedPref.getString("username", "");
+            String savedPassword = sharedPref.getString("password", "");
+            String savedName = sharedPref.getString("name", "");
+
+            // Check if credentials match
+            if (username.equals(savedUsername) && password.equals(savedPassword)) {
+                LoggedInUser user = new LoggedInUser(
+                        java.util.UUID.randomUUID().toString(),
+                        savedName.isEmpty() ? username : savedName
+                );
+                return new Result.Success<>(user);
+            } else {
+                return new Result.Error(new IOException("Username atau password salah"));
+            }
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));
         }

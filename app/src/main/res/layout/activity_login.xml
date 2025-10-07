@@ -33,12 +33,14 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <TextView
-            android:id="@+id/register"
+            android:id="@+id/btnToRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/action_register"
             android:textSize="16sp"
+            android:textColor="@color/design_default_color_primary"
+            android:layout_marginLeft="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
@@ -104,12 +106,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:autofillHints="@string/prompt_email"
+                android:autofillHints="@string/prompt_username"
                 android:background="@drawable/input_bg"
                 android:elevation="100dp"
                 android:fontFamily="@font/montserrat"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/prompt_username"
+                android:inputType="text"
                 android:paddingHorizontal="32dp"
                 android:selectAllOnFocus="true"
                 android:textColor="@color/black"

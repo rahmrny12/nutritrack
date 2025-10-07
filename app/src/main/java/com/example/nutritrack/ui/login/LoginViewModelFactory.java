@@ -1,26 +1,34 @@
-package com.example.nutritrack.ui.login;
+    package com.example.nutritrack.ui.login;
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.annotation.NonNull;
+    import android.content.Context;
 
-import com.example.nutritrack.data.LoginDataSource;
-import com.example.nutritrack.data.LoginRepository;
+    import androidx.lifecycle.ViewModel;
+    import androidx.lifecycle.ViewModelProvider;
+    import androidx.annotation.NonNull;
 
-/**
- * ViewModel provider factory to instantiate LoginViewModel.
- * Required given LoginViewModel has a non-empty constructor
- */
-public class LoginViewModelFactory implements ViewModelProvider.Factory {
+    import com.example.nutritrack.data.LoginDataSource;
+    import com.example.nutritrack.data.LoginRepository;
 
-    @NonNull
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-            return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource()));
-        } else {
-            throw new IllegalArgumentException("Unknown ViewModel class");
+    /**
+     * ViewModel provider factory to instantiate LoginViewModel.
+     * Required given LoginViewModel has a non-empty constructor
+     */
+    public class LoginViewModelFactory implements ViewModelProvider.Factory {
+
+        private Context context;
+
+        public LoginViewModelFactory(Context context) {
+            this.context = context;
+        }
+
+        @NonNull
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            if (modelClass.isAssignableFrom(LoginViewModel.class)) {
+                return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource(context)));
+            } else {
+                throw new IllegalArgumentException("Unknown ViewModel class");
+            }
         }
     }
-}

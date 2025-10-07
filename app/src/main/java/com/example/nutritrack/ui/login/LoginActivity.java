@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.nutritrack.InitialProfileActivity;
 import com.example.nutritrack.R;
+import com.example.nutritrack.RegisterActivity;
 import com.example.nutritrack.ui.login.LoginViewModel;
 import com.example.nutritrack.ui.login.LoginViewModelFactory;
 import com.example.nutritrack.databinding.ActivityLoginBinding;
@@ -45,13 +47,19 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
+        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(getApplicationContext()))
                 .get(LoginViewModel.class);
 
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
         final Button loginButton = binding.login;
         final ProgressBar loadingProgressBar = binding.loading;
+        final TextView btnToRegister = binding.btnToRegister;
+
+        btnToRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -128,12 +136,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
+        // Simpan status login di SharedPreferences
+        SharedPreferences sharedPref = getSharedPreferences("UserPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.apply();
+
+        // Arahkan ke halaman utama (InitialProfileActivity)
         Intent intent = new Intent(this, InitialProfileActivity.class);
         startActivity(intent);
-
-        // Opsional: tutup activity login supaya tidak bisa back ke sini
-        finish();
+        finish(); // Supaya tidak bisa back ke login lagi
     }
+
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();

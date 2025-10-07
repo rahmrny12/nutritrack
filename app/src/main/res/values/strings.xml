@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">NutriTrack</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_address">Alamat</string>
     <string name="prompt_password">Kata Sandi</string>
+    <string name="prompt_confirm_password">Konfirmasi Kata Sandi</string>
     <string name="action_sign_in">Submit</string>
     <string name="action_sign_in_short">Submit</string>
     <string name="welcome">"Selamat Datang!"</string>
@@ -10,11 +13,14 @@
     <string name="login_failed">"Autentikasi Pengguna Gagal"</string>
     <string name="no_account_info">Tidak Punya Akun?</string>
     <string name="action_register">Daftar</string>
+    <string name="exist_account_info">Sudah Punya Akun?</string>
+    <string name="action_login">Login</string>
     <string name="or_text">Atau</string>
     <string name="fb_btn_text">Tombol Facebook</string>
     <string name="google_btn_text">Tombol Google</string>
     <string name="logo_nutritrack_text">Logo NutriTrack</string>
     <string name="login_heading">MASUK</string>
+    <string name="register_heading">DAFTAR</string>
     <string name="x_btn_text">Tombol X</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -61,4 +67,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="confirm_btn_text">Konfirmasi</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Tahan</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="action_forgot_pass">Reset</string>
+    <string name="action_logout">Logout</string>
 </resources>
