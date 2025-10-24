@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">NutriTrack</string>
     <string name="prompt_name">Name</string>
-    <string name="prompt_username">Username</string>
+    <string name="prompt_email">Email</string>
     <string name="prompt_address">Alamat</string>
     <string name="prompt_password">Kata Sandi</string>
     <string name="prompt_confirm_password">Konfirmasi Kata Sandi</string>
     <string name="action_sign_in">Submit</string>
     <string name="action_sign_in_short">Submit</string>
     <string name="welcome">"Selamat Datang!"</string>
-    <string name="invalid_username">Username tidak sesuai</string>
+    <string name="invalid_email">Email tidak sesuai</string>
     <string name="invalid_password">Kata sandi minimal 5 karakter</string>
     <string name="login_failed">"Autentikasi Pengguna Gagal"</string>
     <string name="no_account_info">Tidak Punya Akun?</string>

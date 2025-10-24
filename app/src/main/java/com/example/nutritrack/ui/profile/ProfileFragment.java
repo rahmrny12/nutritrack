@@ -41,11 +41,11 @@ public class ProfileFragment extends Fragment {
 
         // Ambil data dari SharedPreferences
         String name = sharedPref.getString("name", "-");
-        String username = sharedPref.getString("username", "-");
+        String email = sharedPref.getString("email", "-");
         String address = sharedPref.getString("address", "-");
 
         tvName.setText("Nama: " + name);
-        tvEmail.setText("Username: " + username);
+        tvEmail.setText("Email: " + email);
         tvAddress.setText("Alamat: " + address);
 
         btnReset.setOnClickListener(v -> {
