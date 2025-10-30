@@ -76,4 +76,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="action_forgot_pass">Reset</string>
     <string name="action_logout">Logout</string>
+    <string name="still_need_to_gain">Still need to gain</string>
+    <string name="calorie_format">%1$s kcal</string>
+    <string name="fab_add_meal">Tambahkan Makanan Baru</string>
 </resources>
