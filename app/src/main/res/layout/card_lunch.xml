@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/meal_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lunch Time"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/dropdown_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Dropdown"
+            android:src="@drawable/ic_arrow_drop_down"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#616161" />
+
+        <ImageView
+            android:id="@+id/fire_icon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="Fire Icon"
+            android:src="@drawable/ic_fire"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/meal_title"
+            app:tint="#ff9800" />
+
+        <TextView
+            android:id="@+id/calorie_range"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="456 - 512 kcal"
+            android:textColor="#616161"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/fire_icon"
+            app:layout_constraintStart_toEndOf="@id/fire_icon"
+            app:layout_constraintTop_toTopOf="@id/fire_icon" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dropdown_icon">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/rounded_image_background"
+                android:contentDescription="Meal Image 1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/lunch1" /> <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rounded_image_background"
+            android:contentDescription="Meal Image 2"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lunch2" /> <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/circle_button_background"
+            android:contentDescription="Add Meal"
+            android:src="@drawable/ic_add"
+            app:tint="#616161" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

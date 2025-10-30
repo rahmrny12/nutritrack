@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 🔹 Gradasi lembut dari hijau muda ke putih -->
+    <gradient
+        android:startColor="#C6F6D5"
+        android:endColor="#FFFFFF"
+        android:angle="180" />
+
+    <!-- 🔹 Sudut membulat -->
+    <corners android:radius="20dp" />
+
+    <!-- 🔹 Sedikit bayangan lembut di bawah header -->
+    <padding android:bottom="8dp" />
+</shape>

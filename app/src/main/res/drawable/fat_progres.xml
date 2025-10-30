@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/circle_light_gray" />
+    <item>
+        <rotate
+            android:fromDegrees="-90"
+            android:toDegrees="270"> <shape android:shape="ring"
+            android:thickness="4dp"
+            android:useLevel="true">
+            <solid android:color="#e91e63" />
+            <size android:width="48dp" android:height="48dp" />
+        </shape>
+        </rotate>
+    </item>
+</layer-list>
