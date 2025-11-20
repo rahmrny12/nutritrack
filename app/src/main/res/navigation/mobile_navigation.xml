@@ -5,15 +5,38 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+    <!-- Home -->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.nutritrack.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- Report -->
+    <fragment
+        android:id="@+id/navigation_report"
+        android:name="com.example.nutritrack.ui.report.ReportFragment"
+        android:label="@string/title_report"
+        tools:layout="@layout/fragment_report" />
+
+    <!-- Add (could be a Fragment or direct navigation to a Dialog/Activity) -->
+    <fragment
+        android:id="@+id/navigation_add"
+        android:name="com.example.nutritrack.ui.log_food.LogFoodFragment"
+        android:label="@string/title_log_food"
+        tools:layout="@layout/fragment_log_food" />
+
+    <!-- Diary -->
+    <fragment
+        android:id="@+id/navigation_diary"
+        android:name="com.example.nutritrack.ui.diary.DiaryFragment"
+        android:label="@string/title_diary"
+        tools:layout="@layout/fragment_diary" />
+
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.nutritrack.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
 </navigation>

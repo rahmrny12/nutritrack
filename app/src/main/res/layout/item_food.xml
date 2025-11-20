@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/stroke_menu"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/txtFoodName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Tempe Goreng"
+        android:textSize="15sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:id="@+id/txtFoodInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="225 cal, 100g"
+        android:textSize="13sp"
+        android:textColor="#555" />
+
+    <ImageButton
+        android:id="@+id/btnAddFood"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@null"
+        android:src="@drawable/btn_plus"
+        android:padding="4dp" />
+</LinearLayout>

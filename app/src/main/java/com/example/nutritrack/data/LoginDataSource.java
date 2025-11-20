@@ -19,7 +19,7 @@ public class LoginDataSource {
     private final Context context;
 
     public LoginDataSource(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     /**

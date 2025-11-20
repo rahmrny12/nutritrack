@@ -12,54 +12,57 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.nutritrack.R;
+import com.example.nutritrack.data.model.MealModel;
 
 import java.util.List;
 
-public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder> {
+public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Meal> mealList;
+    private List<MealModel> list;
+    private OnMealClick listener;
 
-    public MealAdapter(Context context, List<Meal> mealList) {
-        this.context = context;
-        this.mealList = mealList;
+    public interface OnMealClick {
+        void onClick(MealModel meal);
+    }
+
+    public MealAdapter(List<MealModel> list, OnMealClick listener) {
+        this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public MealViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_meal, parent, false);
-        return new MealViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_my_meal, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MealViewHolder holder, int position) {
-        Meal meal = mealList.get(position);
-        holder.mealName.setText(meal.getName());
-//        holder.mealCalories.setText(meal.getCaloriesRange());
-//        holder.mealImage.setImageResource(meal.getImageResId());
-//        holder.mealImage2.setImageResource(meal.getImageResId());
-        holder.addButton.setOnClickListener(v ->
-                Toast.makeText(context, "Add " + meal.getName(), Toast.LENGTH_SHORT).show());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        MealModel m = list.get(position);
+
+        holder.title.setText(m.getName());
+        holder.subtitle.setText(m.getCalories() + " cal • " + m.getTime());
+
+        holder.itemView.setOnClickListener(v -> {
+            listener.onClick(m);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mealList.size();
+        return list.size();
     }
 
-    public static class MealViewHolder extends RecyclerView.ViewHolder {
-        TextView mealName, mealCalories;
-        ImageView mealImage, mealImage2;
-        ImageButton addButton;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView title, subtitle;
 
-        public MealViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mealName = itemView.findViewById(R.id.mealName);
-            mealCalories = itemView.findViewById(R.id.mealCalories);
-            mealImage = itemView.findViewById(R.id.mealImage);
-            mealImage2 = itemView.findViewById(R.id.mealImage2);
-            addButton = itemView.findViewById(R.id.addButton);
+
+            title = itemView.findViewById(R.id.mealTitle);
+            subtitle = itemView.findViewById(R.id.mealSubtitle);
         }
     }
 }

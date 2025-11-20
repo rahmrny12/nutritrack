@@ -34,9 +34,6 @@ public class ProfileFragment extends Fragment {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
 
         tvName = view.findViewById(R.id.tvName);
-        tvEmail = view.findViewById(R.id.tvEmail);
-        tvAddress = view.findViewById(R.id.tvAddress);
-        btnReset = view.findViewById(R.id.btnForgotPassword);
         btnLogout = view.findViewById(R.id.btnLogout);
 
         // Ambil data dari SharedPreferences
@@ -45,13 +42,6 @@ public class ProfileFragment extends Fragment {
         String address = sharedPref.getString("address", "-");
 
         tvName.setText("Nama: " + name);
-        tvEmail.setText("Email: " + email);
-        tvAddress.setText("Alamat: " + address);
-
-        btnReset.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
 
         btnLogout.setOnClickListener(v -> {
             // Hapus data login

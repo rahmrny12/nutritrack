@@ -1,75 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:background="@drawable/bg_card"
-    android:padding="16dp"
-    android:gravity="center_vertical"
-    android:layout_marginVertical="6dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp"
+    android:padding="8dp"
+    android:background="@android:color/white"
+    android:layout_marginBottom="8dp"
+    android:elevation="1dp">
 
-    <ImageView
-        android:src="@drawable/ic_fire"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginEnd="8dp" />
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="1"
+    <TextView
+        android:id="@+id/mealName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:text="Grilled Chicken"
+        android:textColor="#2C3E50"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mealCalories"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/mealName"
-            android:text="Breakfast"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/mealCalories"
-            android:text="456 - 512 kcal"
-            android:textSize="13sp"
-            android:textColor="#777"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/mealCalories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="8dp">
+        android:text="230 kcal"
+        android:textSize="12sp"
+        android:textColor="#888"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/mealName"/>
 
-    <ImageView
-        android:id="@+id/mealImage"
-        android:src="@drawable/meal_sample"
-        android:layout_marginEnd="8dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:scaleType="centerCrop"/>
-
-        <ImageView
-            android:id="@+id/mealImage2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/circle_plus"
-            android:scaleType="centerCrop"
-            android:src="@drawable/meal_sample" />
-
-        <ImageButton
-            android:id="@+id/addButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/circle_plus"
-            android:src="@drawable/ic_add"
-            app:tint="@color/teal_700"
-            android:contentDescription="Add Meal" />
-</LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,83 +1,358 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:fillViewport="true"
+    android:background="#F9FAFB"
     tools:context=".ui.home.HomeFragment">
 
-    <!-- Top Timestamp Bar -->
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginBottom="16dp">
-
-        <TextView
-            android:id="@+id/tvTopTimestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Senin, 06-10-2025 19:45"
-            android:textSize="12sp"
-            android:textColor="#7A7A7A"
-            android:fontFamily="@font/montserrat_semibold"/>
-    </LinearLayout>
-
-    <!-- Profile Header Card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardUserInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="12dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/baseline_person_24"
+                android:id="@+id/imgProfile"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/sample_profile"
                 android:scaleType="centerCrop"
-                android:adjustViewBounds="true" />
+                android:background="@drawable/circle_shape"
+                android:clipToOutline="true"
+                android:padding="2dp" />
 
-            <!-- bagian teks -->
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center_vertical"
                 android:layout_marginStart="16dp">
 
                 <TextView
-                    android:id="@+id/tvWelcome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Selamat datang,"
-                    android:textSize="16sp"
-                    android:textColor="#6B6B6B"
-                    android:fontFamily="@font/montserrat_semibold" />
-
-                <TextView
-                    android:id="@+id/tvName"
+                    android:id="@+id/tvHello"
+                    android:text="Hello Rendy!"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nama User yang Panjang Sekali Sampai Tidak Terpotong"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#2B2B2B"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:ellipsize="end"
-                    android:singleLine="false" />
+                    android:textColor="#2B2B2B" />
+
+                <TextView
+                    android:id="@+id/tvWeight"
+                    android:text="Your weight today is 50 kg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="#6B6B6B" />
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dateRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Calorie Goal Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardCalorieGoal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="12dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp">
+
+                <TextView
+                    android:text="Calorie Goal : "
+                    android:textColor="#000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/tvCalorieGoal"
+                    android:text="1280 cal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00ADEF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_horizontal"
+                    android:textAlignment="center"/>
+
+                <TextView
+                    android:text="Remaining = Goal - Food + Water"
+                    android:textSize="13sp"
+                    android:textColor="#6B6B6B"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <!-- Food & Water Row -->
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <!-- Food -->
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:src="@drawable/ic_food"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"/>
+
+                        <TextView
+                            android:text="Food"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="60dp"
+                            android:layout_height="6dp"
+                            android:progress="60"
+                            android:max="100"
+                            android:progressDrawable="@drawable/progress_food"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:gravity="center"
+                        android:layout_marginTop="12dp"
+                        android:orientation="vertical">
+                        <com.ekn.gruzer.gaugelibrary.ArcGauge
+                            android:id="@+id/calories_gauge"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_marginHorizontal="8dp"/>
+
+
+                        <TextView
+                            android:id="@+id/tvRemaining"
+                            android:text="1,000\nRemaining"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#00BCD4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <!-- Water -->
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:src="@drawable/ic_water"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"/>
+
+                        <TextView
+                            android:text="Water"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <ProgressBar
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="60dp"
+                            android:layout_height="6dp"
+                            android:progress="40"
+                            android:max="100"
+                            android:progressDrawable="@drawable/progress_water"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!-- Today's Meal -->
+        <TextView
+            android:text="Today's Meal"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginHorizontal="12dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/sample_meal"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_image_bg" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:text="Spaghetti Aglio Olio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:textColor="#2B2B2B" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp">
+
+                        <TextView
+                            android:text="230 cal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="#E0F7FA"
+                            android:textColor="#00ADEF"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:text="25g"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#E74C3C"
+                            android:layout_marginStart="12dp"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:text="10g"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F1C40F"
+                            android:layout_marginStart="12dp"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:text="40g"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="#2ECC71"
+                            android:layout_marginStart="12dp"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:text="Water"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="800/1200 ml"
+                    android:textSize="13sp"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvWeightProgressTitle"
+            android:text="Weight Progress"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginVertical="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/weightChart"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_image_bg"
+            android:padding="8dp"
+            android:layout_marginHorizontal="12dp"/>
+
+
+    </LinearLayout>
+</ScrollView>

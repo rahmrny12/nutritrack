@@ -69,6 +69,9 @@
     <string name="confirm_btn_text">Konfirmasi</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Home</string>
+    <string name="title_log_food">Add</string>
+    <string name="title_report">Report</string>
+    <string name="title_diary">Diary</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_profile">Profile</string>
     <string name="title_activity_splash">SplashActivity</string>
@@ -77,12 +80,10 @@
     <string name="action_forgot_pass">Reset</string>
     <string name="action_logout">Logout</string>
 
-    <string-array name="kategori_makan">
-        <item>Pilih kategori</item>
+    <string-array name="meal_categories">
         <item>Breakfast</item>
         <item>Lunch</item>
         <item>Dinner</item>
-        <item>Snack</item>
     </string-array>
 
 </resources>

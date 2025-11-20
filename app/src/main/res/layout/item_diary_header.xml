@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_header_card">
+
+    <TextView
+        android:id="@+id/tvNeedToGain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Still need to gain"
+        android:textSize="16sp"
+        android:textColor="#333"/>
+
+    <TextView
+        android:id="@+id/tvCaloriesRemaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="354 kcal"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="#333"
+        android:layout_marginTop="6dp"/>
+
+    <!-- Circles -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <com.example.nutritrack.ui.CircleShape
+            android:id="@+id/circleProtein"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginEnd="8dp"/>
+
+        <com.example.nutritrack.ui.CircleShape
+            android:id="@+id/circleFat"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginEnd="8dp"/>
+
+        <com.example.nutritrack.ui.CircleShape
+            android:id="@+id/circleCarbs"
+            android:layout_width="90dp"
+            android:layout_height="90dp"/>
+    </LinearLayout>
+</LinearLayout>
