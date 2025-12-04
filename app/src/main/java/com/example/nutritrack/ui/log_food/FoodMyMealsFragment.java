@@ -1,36 +1,37 @@
 package com.example.nutritrack.ui.log_food;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.MealModel;
+import com.example.nutritrack.data.service.MealApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
 import com.example.nutritrack.ui.MealAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FoodMyMealsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefresh;
-
-    private FirebaseUser user;
-    private DatabaseReference ref;
-    private List<MealModel> mealList = new ArrayList<>();
+    private RecyclerView recyclerView;
     private MealAdapter adapter;
+    private List<MealModel> mealList = new ArrayList<>();
 
     public FoodMyMealsFragment() {}
 
@@ -42,67 +43,57 @@ public class FoodMyMealsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerMyMeals);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new MealAdapter(mealList, meal -> {
-            LogFoodFragment parent = (LogFoodFragment) getParentFragment();
-            if (parent != null) {
-                parent.saveToDiary(meal, "meal");
+        adapter = new MealAdapter(mealList, new MealAdapter.OnMealClick() {
+            @Override
+            public void onAdd(MealModel meal) {
+                LogFoodFragment parent = (LogFoodFragment) getParentFragment();
+                if (parent != null) parent.saveToDiary(meal, "meal");
+            }
+
+            @Override
+            public void onTap(MealModel meal) {
+                Intent intent = new Intent(getContext(), MealDetailActivity.class);
+                intent.putExtra("meal", meal); // <-- passing the object
+                startActivity(intent);
             }
         });
+
+
         recyclerView.setAdapter(adapter);
 
-        loadData();
-
-        // Swipe-to-refresh listener
-        swipeRefresh.setOnRefreshListener(this::loadData);
+        loadMeals();
+        swipeRefresh.setOnRefreshListener(this::loadMeals);
 
         return view;
     }
 
-    private void loadData() {
+
+    private void loadMeals() {
         swipeRefresh.setRefreshing(true);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            android.util.Log.e("DEBUG_MYMEALS", "User is NULL");
-            swipeRefresh.setRefreshing(false);
-            return;
-        }
+        MealApiService api = RetrofitClient.getInstance().create(MealApiService.class);
+        Call<List<MealModel>> call = api.getMeals();
 
-        String uid = user.getUid();
-        android.util.Log.d("DEBUG_MYMEALS", "UID = " + uid);
+        call.enqueue(new Callback<List<MealModel>>() {
+            @Override
+            public void onResponse(Call<List<MealModel>> call, Response<List<MealModel>> response) {
+                swipeRefresh.setRefreshing(false);
 
-        ref = FirebaseDatabase.getInstance()
-                .getReference("users")
-                .child(uid)
-                .child("meals");
-
-        android.util.Log.d("DEBUG_MYMEALS", "Path: users/" + uid + "/meals");
-
-        ref.get().addOnSuccessListener(snapshot -> {
-            android.util.Log.d("DEBUG_MYMEALS", "Snapshot exists: " + snapshot.exists());
-            android.util.Log.d("DEBUG_MYMEALS", "Children count: " + snapshot.getChildrenCount());
-
-            mealList.clear();
-
-            for (DataSnapshot ds : snapshot.getChildren()) {
-                MealModel model = ds.getValue(MealModel.class);
-
-                android.util.Log.d("DEBUG_MYMEALS", "Meal: " + ds.getKey());
-
-                if (model != null) {
-                    mealList.add(model);
-                } else {
-                    android.util.Log.e("DEBUG_MYMEALS", "Model NULL for key: " + ds.getKey());
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("MEALS_API", "Failed: " + response.code());
+                    return;
                 }
+
+                mealList.clear();
+                mealList.addAll(response.body());
+                adapter.notifyDataSetChanged();
             }
 
-            adapter.notifyDataSetChanged();
-            android.util.Log.d("DEBUG_MYMEALS", "Adapter notified. Total items: " + mealList.size());
-
-            swipeRefresh.setRefreshing(false);
-        }).addOnFailureListener(e -> {
-            android.util.Log.e("DEBUG_MYMEALS", "Firebase ERROR", e);
-            swipeRefresh.setRefreshing(false);
+            @Override
+            public void onFailure(Call<List<MealModel>> call, Throwable t) {
+                swipeRefresh.setRefreshing(false);
+                Log.e("MEALS_API_ERROR", t.getMessage(), t);
+            }
         });
     }
 }

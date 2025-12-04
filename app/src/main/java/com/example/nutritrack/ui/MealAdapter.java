@@ -1,12 +1,9 @@
 package com.example.nutritrack.ui;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -22,7 +19,8 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     private OnMealClick listener;
 
     public interface OnMealClick {
-        void onClick(MealModel meal);
+        void onAdd(MealModel meal);
+        void onTap(MealModel meal);
     }
 
     public MealAdapter(List<MealModel> list, OnMealClick listener) {
@@ -42,11 +40,17 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MealModel m = list.get(position);
 
-        holder.title.setText(m.getName());
-        holder.subtitle.setText(m.getCalories() + " cal • " + m.getTime());
+        holder.mealTitle.setText(m.getMealsName());
+        holder.mealSubtitle.setText(m.getCalories() + " cal");
 
+        // CLICK ADD ICON
+        holder.btnAddMeal.setOnClickListener(v -> {
+            listener.onAdd(m);
+        });
+
+        // ON TAP ITEM
         holder.itemView.setOnClickListener(v -> {
-            listener.onClick(m);
+            listener.onTap(m);
         });
     }
 
@@ -56,13 +60,15 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, subtitle;
+        TextView mealTitle, mealSubtitle;
+        ImageButton btnEditMeal, btnAddMeal;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            title = itemView.findViewById(R.id.mealTitle);
-            subtitle = itemView.findViewById(R.id.mealSubtitle);
+            mealTitle = itemView.findViewById(R.id.mealTitle);
+            mealSubtitle = itemView.findViewById(R.id.mealSubtitle);
+            btnAddMeal = itemView.findViewById(R.id.btnAddMeal);
         }
     }
 }

@@ -15,10 +15,16 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
     private List<DateModel> dateList;
     private Context context;
     private int selectedPosition = -1;
+    private OnDateClickListener listener;
 
-    public DateAdapter(Context context, List<DateModel> dateList) {
+    public DateAdapter(Context context, List<DateModel> dateList, OnDateClickListener listener) {
         this.context = context;
         this.dateList = dateList;
+        this.listener = listener;
+    }
+
+    public interface OnDateClickListener {
+        void onDateClick(String fullDate);
     }
 
     @Override
@@ -44,10 +50,16 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.ViewHolder> {
         }
 
         holder.itemView.setOnClickListener(v -> {
+
             for (DateModel d : dateList) d.isSelected = false;
             model.isSelected = true;
             notifyDataSetChanged();
+
+            if (listener != null) {
+                listener.onDateClick(model.fullDate); // SEND SELECTED DATE
+            }
         });
+
     }
 
     @Override

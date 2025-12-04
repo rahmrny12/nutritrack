@@ -36,7 +36,12 @@ public class LoginViewModel extends ViewModel {
                 LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
                 loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
             } else {
-                loginResult.setValue(new LoginResult(R.string.login_failed));
+                String msg = R.string.login_failed
+                        + " : "
+                        + ((Result.Error) result).getError().getMessage();
+
+                loginResult.setValue(new LoginResult(msg));
+
             }
         });
     }

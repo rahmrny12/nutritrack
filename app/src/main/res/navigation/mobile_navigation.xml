@@ -15,9 +15,9 @@
     <!-- Report -->
     <fragment
         android:id="@+id/navigation_report"
-        android:name="com.example.nutritrack.ui.report.ReportFragment"
+        android:name="com.example.nutritrack.ui.log_food.MealDetailFragment"
         android:label="@string/title_report"
-        tools:layout="@layout/fragment_report" />
+        tools:layout="@layout/fragment_meal_detail" />
 
     <!-- Add (could be a Fragment or direct navigation to a Dialog/Activity) -->
     <fragment

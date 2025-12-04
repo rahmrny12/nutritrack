@@ -1,36 +1,54 @@
 package com.example.nutritrack.ui.log_food;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.MealModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.nutritrack.data.service.MealApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
+import com.example.nutritrack.databinding.ActivityCreateMyMealBinding;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateMyMealActivity extends AppCompatActivity {
 
     private EditText etName, etCalories, etCarbs, etProtein, etFat;
     private Button btnSave;
-
-    private DatabaseReference ref;
+    ChipGroup chipGroup;
+    AutoCompleteTextView search;
+    List<String> ingredientList;
+    ActivityCreateMyMealBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_my_meal);
+        binding = ActivityCreateMyMealBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        chipGroup = binding.chipGroupIngredients;
+        search = binding.ingredientSearch;
+
+        setupIngredientSearch();
+
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         etName = findViewById(R.id.etMealName);
         etCalories = findViewById(R.id.etCalories);
@@ -41,6 +59,51 @@ public class CreateMyMealActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> saveMeal());
     }
+
+    private void setupIngredientSearch() {
+
+        String[] FOOD_DATA = {
+                "Chicken Breast", "Egg", "Rice", "Oats", "Banana",
+                "Broccoli", "Milk", "Beef", "Salmon", "Bread"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                FOOD_DATA
+        );
+
+        binding.ingredientSearch.setAdapter(adapter);
+
+        // Add chip when clicked
+        binding.ingredientSearch.setOnItemClickListener((parent, view, pos, id) -> {
+            String selected = parent.getItemAtPosition(pos).toString();
+
+            if (!ingredientList.contains(selected)) {
+                ingredientList.add(selected);
+                addChip(selected);
+            }
+
+            binding.ingredientSearch.setText("");
+        });
+    }
+
+    private void addChip(String text) {
+        Chip chip = new Chip(this);
+        chip.setText(text);
+        chip.setCloseIconVisible(true);
+        chip.setCheckable(false);
+        chip.setClickable(false);
+
+        chip.setOnCloseIconClickListener(v -> {
+            binding.chipGroupIngredients.removeView(chip);
+            ingredientList.remove(text);
+        });
+
+        binding.chipGroupIngredients.addView(chip);
+    }
+
+
 
     private void saveMeal() {
         String name = etName.getText().toString().trim();
@@ -54,47 +117,33 @@ public class CreateMyMealActivity extends AppCompatActivity {
             return;
         }
 
-        int calories = Integer.parseInt(caloriesStr);
-        int carbs = carbsStr.isEmpty() ? 0 : Integer.parseInt(carbsStr);
-        int protein = proteinStr.isEmpty() ? 0 : Integer.parseInt(proteinStr);
-        int fat = fatStr.isEmpty() ? 0 : Integer.parseInt(fatStr);
+        double calories = Double.parseDouble(caloriesStr);
+        double carbs = carbsStr.isEmpty() ? 0 : Double.parseDouble(carbsStr);
+        double protein = proteinStr.isEmpty() ? 0 : Double.parseDouble(proteinStr);
+        double fat = fatStr.isEmpty() ? 0 : Double.parseDouble(fatStr);
 
-        // Auto date & time
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        // Create Model
+        MealModel meal = new MealModel(null, name, calories, carbs, protein, fat);
 
-        String uid = FirebaseAuth.getInstance().getUid();
-        if (uid == null) {
-            Toast.makeText(this, "User tidak ditemukan.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Retrofit Service
+        MealApiService api = RetrofitClient.getInstance().create(MealApiService.class);
 
-        String key = "meal_" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        api.createMeal(meal).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(CreateMyMealActivity.this, "Gagal menyimpan meal", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        DatabaseReference mealRef = FirebaseDatabase.getInstance()
-                .getReference("users")
-                .child(uid)
-                .child("meals")
-                .child(key);
+                Toast.makeText(CreateMyMealActivity.this, "Meal berhasil disimpan!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
 
-        MealModel meal = new MealModel(
-                name,
-                calories,
-                carbs,
-                protein,
-                fat,
-                date,
-                time,
-                "" // image kosong untuk sekarang
-        );
-
-        mealRef.setValue(meal)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Meal berhasil disimpan!", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Gagal menyimpan: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(CreateMyMealActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

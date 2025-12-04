@@ -5,13 +5,15 @@
     android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_header_card">
+    android:background="@drawable/bg_header_card"
+    android:layout_marginBottom="24dp">
 
     <TextView
         android:id="@+id/tvNeedToGain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Still need to gain"
+        android:layout_gravity="center_horizontal"
         android:textSize="16sp"
         android:textColor="#333"/>
 
@@ -20,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="354 kcal"
+        android:layout_gravity="center_horizontal"
         android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="#333"
@@ -33,21 +36,73 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <com.example.nutritrack.ui.CircleShape
-            android:id="@+id/circleProtein"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginEnd="8dp"/>
+        <!-- Protein -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp">
 
-        <com.example.nutritrack.ui.CircleShape
-            android:id="@+id/circleFat"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginEnd="8dp"/>
+            <com.example.nutritrack.ui.CircleShape
+                android:id="@+id/circleProtein"
+                android:layout_width="90dp"
+                android:layout_height="90dp"/>
 
-        <com.example.nutritrack.ui.CircleShape
-            android:id="@+id/circleCarbs"
-            android:layout_width="90dp"
-            android:layout_height="90dp"/>
+            <TextView
+                android:id="@+id/labelProtein"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Protein"
+                android:textSize="13sp"
+                android:textColor="#333"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- Fat -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp">
+
+            <com.example.nutritrack.ui.CircleShape
+                android:id="@+id/circleFat"
+                android:layout_width="90dp"
+                android:layout_height="90dp"/>
+
+            <TextView
+                android:id="@+id/labelFat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fat"
+                android:textSize="13sp"
+                android:textColor="#333"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- Carbs -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.example.nutritrack.ui.CircleShape
+                android:id="@+id/circleCarbs"
+                android:layout_width="90dp"
+                android:layout_height="90dp"/>
+
+            <TextView
+                android:id="@+id/labelCarbs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carbs"
+                android:textSize="13sp"
+                android:textColor="#333"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

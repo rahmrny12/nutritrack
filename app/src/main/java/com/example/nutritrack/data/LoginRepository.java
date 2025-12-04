@@ -1,6 +1,9 @@
 package com.example.nutritrack.data;
 
+import android.content.Context;
+
 import com.example.nutritrack.data.model.LoggedInUser;
+import com.example.nutritrack.data.model.UserPreferences;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -9,6 +12,7 @@ import com.example.nutritrack.data.model.LoggedInUser;
 public class LoginRepository {
 
     private static volatile LoginRepository instance;
+    private Context appContext;
 
     private LoginDataSource dataSource;
 
@@ -17,13 +21,14 @@ public class LoginRepository {
     private LoggedInUser user = null;
 
     // private constructor : singleton access
-    private LoginRepository(LoginDataSource dataSource) {
+    private LoginRepository(LoginDataSource dataSource, Context context) {
         this.dataSource = dataSource;
+        this.appContext = context.getApplicationContext();
     }
 
-    public static LoginRepository getInstance(LoginDataSource dataSource) {
+    public static LoginRepository getInstance(LoginDataSource dataSource, Context context) {
         if (instance == null) {
-            instance = new LoginRepository(dataSource);
+            instance = new LoginRepository(dataSource, context);
         }
         return instance;
     }
@@ -44,9 +49,22 @@ public class LoginRepository {
     }
 
     public void login(String email, String password, LoginDataSource.LoginCallback callback) {
+
         dataSource.login(email, password, result -> {
+
             if (result instanceof Result.Success) {
-                setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());
+
+                LoggedInUser user = ((Result.Success<LoggedInUser>) result).getData();
+
+                // Save to SharedPreferences
+                UserPreferences prefs = new UserPreferences(appContext);
+                prefs.saveUser(
+                        user.getUserId(),
+                        user.getDisplayName(),
+                        email
+                );
+
+                setLoggedInUser(user); // existing logic
             }
 
             callback.onResult(result);

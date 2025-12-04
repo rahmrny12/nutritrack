@@ -1,82 +1,198 @@
 package com.example.nutritrack;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AskAntropometriFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.fragment.app.Fragment;
+
+import com.example.nutritrack.data.model.GeneralResponse;
+import com.example.nutritrack.data.model.HealthResponse;
+import com.example.nutritrack.data.model.UserPreferences;
+import com.example.nutritrack.data.service.HealthApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import java.util.HashMap;
+
 public class AskAntropometriFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText inputHeight, inputWeight, inputAge, inputWaist;
+    private String userId;
+    private Spinner spinnerGender;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AskAntropometriFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AskAntropometriFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AskAntropometriFragment newInstance(String param1, String param2) {
-        AskAntropometriFragment fragment = new AskAntropometriFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public AskAntropometriFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_ask_antropometri, container, false);
 
-        // Cari button dari layout fragment
+        View view = inflater.inflate(R.layout.fragment_ask_antropometri, container, false);
+
+        // SharedPrefs user ID
+        userId = new UserPreferences(requireContext()).getUserId();
+
+        // Find all fields
+        inputHeight = view.findViewById(R.id.inputHeight);
+        inputWeight = view.findViewById(R.id.inputWeight);
+        inputAge    = view.findViewById(R.id.inputAge);
+        inputWaist  = view.findViewById(R.id.inputWaist);
+
+        spinnerGender = view.findViewById(R.id.spinnerGender);
+
+// What user sees
+        String[] genderDisplay = {"Laki-laki", "Perempuan"};
+
+// What is actually sent to API
+        String[] genderValues = {"male", "female"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                genderDisplay
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGender.setAdapter(adapter);
+
+
+
+        // Fetch Data and Auto Fill
+        fetchAndFill(adapter, genderDisplay);
+
+        // Continue Button
         Button nextBtn = view.findViewById(R.id.confirmBtn);
-
-        // Listener klik
-        nextBtn.setOnClickListener(v -> {
-            // Panggil fragment berikutnya
-            BMIResultFragment stepTwo = new BMIResultFragment();
-
-            // Replace fragment lama dengan yang baru
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, stepTwo)
-                    .addToBackStack(null) // biar tombol "Back" bisa kembali
-                    .commit();
-        });
+        nextBtn.setOnClickListener(v -> updateHealthToApi(genderDisplay, genderValues));
 
         return view;
+    }
+
+
+    /* ============================================================
+       FETCH AND AUTO-FILL USER DATA
+       ============================================================ */
+    private void fetchAndFill(ArrayAdapter genderAdapter, String[] genderValues) {
+
+        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        api.getHealth(userId).enqueue(new Callback<HealthResponse>() {
+            @Override
+            public void onResponse(Call<HealthResponse> call, Response<HealthResponse> response) {
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                HealthResponse res = response.body();
+                HealthResponse.User user = res.data.user;
+
+                if (user.height != null) inputHeight.setText(String.valueOf(user.height));
+                if (user.weight != null) inputWeight.setText(String.valueOf(user.weight));
+                if (user.age != null) inputAge.setText(String.valueOf(user.age));
+                if (user.waistSize != null) inputWaist.setText(String.valueOf(user.waistSize));
+                if (user.gender != null) {
+                    int position = -1;
+
+                    for (int i = 0; i < genderValues.length; i++) {
+                        if (genderValues[i].equalsIgnoreCase(user.gender)) {
+                            position = i;
+                            break;
+                        }
+                    }
+
+                    if (position != -1) {
+                        spinnerGender.setSelection(position);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<HealthResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateHealthToApi(String[] genderDisplay, String[] genderValues) {
+
+        String height = inputHeight.getText().toString();
+        String weight = inputWeight.getText().toString();
+        String age    = inputAge.getText().toString();
+        String waist  = inputWaist.getText().toString();
+        String selectedDisplay = spinnerGender.getSelectedItem().toString();
+        String gender = null;
+
+// Match display text to API value
+        for (int i = 0; i < genderDisplay.length; i++) {
+            if (genderDisplay[i].equals(selectedDisplay)) {
+                gender = genderValues[i];  // "male" or "female"
+                break;
+            }
+        }
+
+
+        if (height.isEmpty() || weight.isEmpty() || age.isEmpty()) {
+            Toast.makeText(getContext(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("id", userId);
+        map.put("height", height);
+        map.put("weight", weight);
+        map.put("age", age);
+        map.put("waist_size", waist);
+        map.put("gender", gender);
+        // gender bisa ambil dari sharedPrefs jika disimpan
+
+        api.updateHealth(map).enqueue(new Callback<GeneralResponse>() {
+            @Override
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(getContext(), "Failed updating data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Jika sukses → next
+                goToNext();
+            }
+
+            @Override
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    /* ============================================================
+       GO TO NEXT SCREEN
+       ============================================================ */
+    private void goToNext() {
+        BMIResultFragment next = new BMIResultFragment();
+
+        Bundle b = new Bundle();
+        b.putString("user_id", userId);
+        next.setArguments(b);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, next)
+                .addToBackStack(null)
+                .commit();
     }
 }

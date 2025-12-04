@@ -107,7 +107,7 @@ public class CircleShape extends View {
         canvas.drawText((int) animatedProgress + "%", cx, cy + (textPaint.getTextSize() / 3), textPaint);
 
         // Label bawah
-        canvas.drawText(label, cx, cy + radius + 40f, labelPaint);
+//        canvas.drawText(label, cx, cy + radius + 40f, labelPaint);
     }
 
     public void setPercentage(int percent) {

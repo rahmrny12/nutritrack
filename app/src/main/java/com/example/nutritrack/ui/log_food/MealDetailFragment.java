@@ -1,4 +1,4 @@
-package com.example.nutritrack.ui.report;
+package com.example.nutritrack.ui.log_food;
 
 import android.os.Bundle;
 
@@ -12,10 +12,10 @@ import com.example.nutritrack.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReportFragment#newInstance} factory method to
+ * Use the {@link MealDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReportFragment extends Fragment {
+public class MealDetailFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ReportFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ReportFragment() {
+    public MealDetailFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class ReportFragment extends Fragment {
      * @return A new instance of fragment ReportFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReportFragment newInstance(String param1, String param2) {
-        ReportFragment fragment = new ReportFragment();
+    public static MealDetailFragment newInstance(String param1, String param2) {
+        MealDetailFragment fragment = new MealDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +61,6 @@ public class ReportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_report, container, false);
+        return inflater.inflate(R.layout.fragment_meal_detail, container, false);
     }
 }

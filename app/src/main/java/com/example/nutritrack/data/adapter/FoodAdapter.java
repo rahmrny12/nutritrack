@@ -23,7 +23,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     }
 
     public FoodAdapter(List<FoodModel> foodList, OnFoodClickListener listener) {
-        this.foodList = foodList;
+        this.foodList = foodList; 
         this.listener = listener;
     }
 
@@ -39,8 +39,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FoodModel food = foodList.get(position);
 
-        holder.name.setText(food.getName());
-        holder.calories.setText(food.getCalories() + " kcal");
+        holder.name.setText(food.getFoodsName());
+        holder.calories.setText(food.getCaloriesPerUnit() + " kcal");
 
         holder.itemView.setOnClickListener(v -> listener.onFoodClick(food));
     }

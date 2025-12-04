@@ -12,22 +12,22 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nutritrack.R;
+import com.example.nutritrack.TempDiaryPopupActivity;
+import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.model.FoodModel;
 import com.example.nutritrack.data.model.IngredientModel;
 import com.example.nutritrack.data.model.MealModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.nutritrack.data.service.DiaryTempStore;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +39,8 @@ public class LogFoodFragment extends Fragment {
     private LinearLayout tabAll, tabMyMeals;
     private View indicatorAll, indicatorMyMeals;
     private String currentSelectedCategory = "Breakfast";
+    FloatingActionButton fab;
+    TextView fabBadge;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +50,16 @@ public class LogFoodFragment extends Fragment {
         tabMyMeals = view.findViewById(R.id.tabMyMeals);
         indicatorAll = view.findViewById(R.id.indicatorAll);
         indicatorMyMeals = view.findViewById(R.id.indicatorMyMeals);
+        fab = view.findViewById(R.id.btnDiaryAction);
+        fabBadge = view.findViewById(R.id.fabBadge);
+
+
+        updateFabVisibility();
+
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), TempDiaryPopupActivity.class);
+            startActivity(intent);
+        });
 
         LinearLayout btnCreateMeal = view.findViewById(R.id.btnCreateMeal);
 
@@ -134,48 +146,72 @@ public class LogFoodFragment extends Fragment {
         indicatorAll.setBackgroundColor(Color.parseColor("#D3D3D3"));
         indicatorMyMeals.setBackgroundColor(Color.parseColor("#0F9E99"));
     }
-
     protected void saveToDiary(Object item, String type) {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
-
-        String uid = user.getUid();
-
-        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String category = currentSelectedCategory; // "Breakfast", "Lunch", etc
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-        long ts = System.currentTimeMillis();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("users")
-                .child(uid)
-                .child("diary")
-                .child(date)
-                .child(category)
-                .child(String.valueOf(ts));
+        String name = "";
+        double calories = 0, carbs = 0, protein = 0, fat = 0;
 
-        Map<String, Object> data = new HashMap<>();
+        DiaryItemModel diaryItem;
 
         if (type.equals("meal")) {
-            MealModel meal = (MealModel) item;
-            data.put("name", meal.getName());
-            data.put("calories", meal.getCalories());
-            data.put("carbs", meal.getCarbs());
-            data.put("protein", meal.getProtein());
-            data.put("fat", meal.getFat());
-        } else if (type.equals("ingredient")) {
-            IngredientModel ing = (IngredientModel) item;
-            data.put("name", ing.name);
-            data.put("calories", ing.calories);
+
+            MealModel m = (MealModel) item;
+
+            name = m.getMealsName();
+            calories = m.getCalories();
+            carbs = m.getCarbs();
+            protein = m.getProtein();
+            fat = m.getFat();
+
+            diaryItem = new DiaryItemModel(
+                    name, calories, carbs, protein, fat, type, time
+            );
+
+            // Set MEAL ID supaya bisa dikirim ke API diary
+            diaryItem.setMealId(m.getId());
+
+        } else if (type.equals("food")) {
+
+            FoodModel ing = (FoodModel) item;
+
+            name = ing.getFoodsName();
+            calories = ing.getCaloriesPerUnit();
+
+            diaryItem = new DiaryItemModel(
+                    name, calories, carbs, protein, fat, "food", time
+            );
+
+            // Set FOOD ID
+            diaryItem.setFoodId(ing.getId());
+        }
+        else {
+            // Fallback
+            Toast.makeText(getContext(), "Unknown diary type", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        data.put("type", type);
-        data.put("time", time);
+        // SAVE IN TEMPORARY STORE
+        DiaryTempStore.getInstance().addItem(diaryItem);
 
-        ref.setValue(data).addOnSuccessListener(v -> {
-            Toast.makeText(getContext(), "Saved to " + category, Toast.LENGTH_SHORT).show();
-        });
+        Toast.makeText(getContext(), "Diary Saved.", Toast.LENGTH_SHORT).show();
+
+        updateFabVisibility();
+    }
+
+    private void updateFabVisibility() {
+        int count = DiaryTempStore.getInstance().getAll().size();
+
+        if (count == 0) {
+            fab.hide();
+            fabBadge.setVisibility(View.GONE);
+        } else {
+            fab.show();
+
+            fabBadge.setVisibility(View.VISIBLE);
+            fabBadge.setText(count > 99 ? "99+" : String.valueOf(count));
+        }
     }
 
 }

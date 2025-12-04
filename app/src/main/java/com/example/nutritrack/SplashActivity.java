@@ -1,16 +1,29 @@
 package com.example.nutritrack;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nutritrack.data.model.DailyGoalResponse;
+import com.example.nutritrack.data.model.HealthResponse;
+import com.example.nutritrack.data.model.UserPreferences;
+import com.example.nutritrack.data.service.HealthApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
 import com.example.nutritrack.databinding.ActivitySplashBinding;
 import com.example.nutritrack.ui.login.LoginActivity;
+import com.google.gson.Gson;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -22,34 +35,130 @@ public class SplashActivity extends AppCompatActivity {
         binding = ActivitySplashBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        // Animasi fade-in
+        // Simple animation saja
         Animation fadeIn = new AlphaAnimation(0f, 1f);
-        fadeIn.setDuration(1500);
+        fadeIn.setDuration(1000);
         fadeIn.setFillAfter(true);
         binding.appLogo.startAnimation(fadeIn);
         binding.appSubtitle.startAnimation(fadeIn);
 
-        // Delay 3 detik, lalu cek login
-        new Handler().postDelayed(() -> {
-            SharedPreferences sharedPref = getSharedPreferences("UserPref", MODE_PRIVATE);
-            boolean isLoggedIn = sharedPref.getBoolean("isLoggedIn", false);
+        // ⛔ TIDAK ADA DELAY
+        checkLoginAndHealth();
+    }
 
-            Intent intent;
-            if (isLoggedIn) {
-                // Langsung ke MainActivity
-                intent = new Intent(SplashActivity.this, MainActivity.class);
-            } else {
-                // Ke halaman login
-                intent = new Intent(SplashActivity.this, LoginActivity.class);
+    private void checkLoginAndHealth() {
+
+        UserPreferences prefs = new UserPreferences(this);
+        String userId = prefs.getUserId();
+
+        if (userId == null || userId.isEmpty()) {
+            goTo(LoginActivity.class);
+            return;
+        }
+
+        Log.d("SPLASH_FLOW", "Request GET Health…");
+
+        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        api.getHealth(userId).enqueue(new Callback<HealthResponse>() {
+            @Override
+            public void onResponse(Call<HealthResponse> call, Response<HealthResponse> response) {
+
+                Log.d("SPLASH_FLOW", "GET Health → onResponse()");
+                Log.d("SPLASH_FLOW", "HTTP CODE: " + response.code());
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("SPLASH_FLOW", "GET Health FAILED");
+                    goTo(LoginActivity.class);
+                    return;
+                }
+
+                HealthResponse res = response.body();
+                prefs.setHealthComplete(res.data.isComplete);
+
+                Log.d("SPLASH_FLOW", "Health Complete = " + res.data.isComplete);
+
+                fetchDailyGoals(userId, res.data.isComplete);
             }
 
-            startActivity(intent);
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        }, 3000);
+            @Override
+            public void onFailure(Call<HealthResponse> call, Throwable t) {
+                Log.e("SPLASH_FLOW", "GET Health → onFailure(): " + t.getMessage());
+                goTo(LoginActivity.class);
+            }
+        });
+    }
+
+    private void fetchDailyGoals(String userId, boolean isHealthComplete) {
+
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        UserPreferences prefs = new UserPreferences(this);
+
+        Log.d("SPLASH_FLOW", "Request GET DailyGoal… (user=" + userId + ", date=" + today + ")");
+
+        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        api.getDailyGoal(userId, today).enqueue(new Callback<DailyGoalResponse>() {
+            @Override
+            public void onResponse(Call<DailyGoalResponse> call, Response<DailyGoalResponse> response) {
+
+                Log.d("DAILY_GOAL_DEBUG", "---- onResponse Triggered ----");
+                Log.d("DAILY_GOAL_DEBUG", "HTTP CODE: " + response.code());
+                Log.d("DAILY_GOAL_DEBUG", "RAW RESPONSE: " + response.raw().toString());
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("DAILY_GOAL_DEBUG", "Daily Goal request FAILED");
+                    navigateAfterLoad(isHealthComplete);
+                    return;
+                }
+
+                DailyGoalResponse.Data d = response.body().data;
+
+                if (d == null) {
+                    Log.e("DAILY_GOAL_DEBUG", "Daily Goal Data is NULL!");
+                    navigateAfterLoad(isHealthComplete);
+                    return;
+                }
+
+                Log.d("DAILY_GOAL_DEBUG", "Tanggal = " + d.tanggal);
+                Log.d("DAILY_GOAL_DEBUG", "Consumed Calories = " + d.consumed.calories);
+
+                String recJson = (d.recommendation != null)
+                        ? new Gson().toJson(d.recommendation)
+                        : null;
+
+                prefs.saveDailyGoals(
+                        d.tanggal,
+                        d.goal.calorieGoal,
+                        d.goal.proteinGoal,
+                        d.goal.carbsGoal,
+                        d.goal.fatGoal,
+                        recJson
+                );
+
+                navigateAfterLoad(isHealthComplete);
+            }
+
+            @Override
+            public void onFailure(Call<DailyGoalResponse> call, Throwable t) {
+                Log.e("DAILY_GOAL_DEBUG", "onFailure: " + t.getMessage());
+                navigateAfterLoad(isHealthComplete);
+            }
+        });
+    }
+
+    private void navigateAfterLoad(boolean isHealthComplete) {
+        Log.d("SPLASH_FLOW", "Navigating… isHealthComplete=" + isHealthComplete);
+
+        if (isHealthComplete) goTo(MainActivity.class);
+        else goTo(InitialProfileActivity.class);
+    }
+
+    private void goTo(Class<?> target) {
+        startActivity(new Intent(SplashActivity.this, target));
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();  // Activity dihancurkan SETELAH request selesai
     }
 }

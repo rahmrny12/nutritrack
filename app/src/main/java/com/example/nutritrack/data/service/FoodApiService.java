@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface FoodApiService {
 
-    @GET("food.php")
+    @GET("foods.php")
     Call<List<FoodModel>> getFoods();
 }

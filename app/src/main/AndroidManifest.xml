@@ -11,7 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NutriTrack"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.log_food.MealDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TempDiaryPopupActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/ModalActivityTheme" />
         <activity
             android:name=".ui.log_food.CreateMyMealActivity"
             android:exported="false" />
@@ -29,16 +37,18 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/title_activity_splash"
-            android:theme="@style/Theme.NutriTrack.Fullscreen" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/title_activity_main">
+            android:theme="@style/Theme.NutriTrack.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main">
+
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -49,7 +59,8 @@
             android:theme="@style/Theme.NutriTrack" />
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false" />
+            android:exported="true" >
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"

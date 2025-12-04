@@ -82,17 +82,25 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
+                if (loginResult == null) return;
+
                 loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
+
+                // 1️⃣ ERROR — STRING dari API
+                if (loginResult.getErrorMessage() != null) {
+                    showLoginFailed(loginResult.getErrorMessage());
                 }
-                if (loginResult.getSuccess() != null) {
+
+                // 2️⃣ ERROR — Resource ID
+                else if (loginResult.getError() != null) {
+                    showLoginFailed(getString(loginResult.getError()));
+                }
+
+                // 3️⃣ SUCCESS LOGIN
+                else if (loginResult.getSuccess() != null) {
                     updateUiWithUser(loginResult.getSuccess());
+                    setResult(Activity.RESULT_OK);
                 }
-                setResult(Activity.RESULT_OK);
             }
         });
 
@@ -154,4 +162,9 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
+    private void showLoginFailed(String errorMessage) {
+        Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
 }

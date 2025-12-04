@@ -1,17 +1,17 @@
 package com.example.nutritrack.data.model;
 
 public class FoodModel {
-    private String id;
-    private String name;
-    private double calories;
-    private double protein;
-    private double carbs;
-    private double fat;
+    private Integer id;
+    private String foodsName;
+    private double caloriesPerUnit;
+    private double proteinPerUnit;
+    private double carbsPerUnit;
+    private double fatPerUnit;
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public double getCalories() { return calories; }
-    public double getProtein() { return protein; }
-    public double getCarbs() { return carbs; }
-    public double getFat() { return fat; }
+    public Integer getId() { return id; }
+    public String getFoodsName() { return foodsName; }
+    public double getCaloriesPerUnit() { return caloriesPerUnit; }
+    public double getProteinPerUnit() { return proteinPerUnit; }
+    public double getCarbsPerUnit() { return carbsPerUnit; }
+    public double getFatPerUnit() { return fatPerUnit; }
 }

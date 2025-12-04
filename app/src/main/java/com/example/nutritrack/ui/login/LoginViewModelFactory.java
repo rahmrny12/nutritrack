@@ -26,7 +26,7 @@
         @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             if (modelClass.isAssignableFrom(LoginViewModel.class)) {
-                return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource(context)));
+                return (T) new LoginViewModel(LoginRepository.getInstance(new LoginDataSource(context), context));
             } else {
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

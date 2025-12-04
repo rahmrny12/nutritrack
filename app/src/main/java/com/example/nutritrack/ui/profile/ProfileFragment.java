@@ -13,9 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.nutritrack.data.model.HealthResponse;
+import com.example.nutritrack.data.service.HealthApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import com.example.nutritrack.ForgotPasswordActivity;
 import com.example.nutritrack.R;
+import com.example.nutritrack.data.model.UserPreferences;
 import com.example.nutritrack.ui.home.HomeFragment;
 import com.example.nutritrack.ui.login.LoginActivity;
 
@@ -23,41 +32,101 @@ import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
-    private TextView tvName, tvEmail, tvAddress;
-    private Button btnReset, btnLogout;
+    private TextView tvName, tvGender, tvCalorie, tvProtein, tvFat, tvCarbs;
+    private TextView tvHeight, tvBMI, tvWeight, tvTarget;
+    private Button btnLogout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        SharedPreferences sharedPref = requireActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+        UserPreferences userPref = new UserPreferences(requireContext());
 
+        // Bind views
         tvName = view.findViewById(R.id.tvName);
+        tvGender = view.findViewById(R.id.tvGender);
+        tvCalorie = view.findViewById(R.id.tvCalorie);
+        tvProtein = view.findViewById(R.id.tvProtein);
+        tvFat = view.findViewById(R.id.tvFat);
+        tvCarbs = view.findViewById(R.id.tvCarbs);
+        tvHeight = view.findViewById(R.id.tvHeight);
+        tvBMI = view.findViewById(R.id.tvBMI);
+        tvWeight = view.findViewById(R.id.tvWeight);
+        tvTarget = view.findViewById(R.id.tvTarget);
         btnLogout = view.findViewById(R.id.btnLogout);
 
-        // Ambil data dari SharedPreferences
-        String name = sharedPref.getString("name", "-");
-        String email = sharedPref.getString("email", "-");
-        String address = sharedPref.getString("address", "-");
+        // GET DATA FROM API AGAIN (RECOMMENDED)
+        fetchUserHealthData(userPref.getUserId(), view.getContext());
 
-        tvName.setText("Nama: " + name);
-
+        // Logout
         btnLogout.setOnClickListener(v -> {
-            // Hapus data login
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.remove("isLoggedIn"); // hanya hapus status login
-            editor.apply();
-
-            // Arahkan ke halaman Login
+            userPref.clear();
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-
-            // Tutup activity sekarang
             requireActivity().finish();
         });
 
         return view;
+    }
+
+
+    // ============================================
+    // FETCH USER DATA (Height, Weight, BMI, etc.)
+    // ============================================
+    private void fetchUserHealthData(String userId, Context context) {
+
+        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        api.getHealth(userId).enqueue(new Callback<HealthResponse>() {
+            @Override
+            public void onResponse(Call<HealthResponse> call, Response<HealthResponse> response) {
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(context, "Gagal memuat profil", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                HealthResponse.User user = response.body().data.user;
+
+                // Update UI
+                tvName.setText(user.fullname);
+                String genderText;
+
+                if (user.gender != null) {
+                    if (user.gender.equalsIgnoreCase("male")) {
+                        genderText = "Laki-laki";
+                    } else if (user.gender.equalsIgnoreCase("female")) {
+                        genderText = "Perempuan";
+                    } else {
+                        genderText = user.gender; // fallback
+                    }
+                } else {
+                    genderText = "-";
+                }
+
+                tvGender.setText(genderText);
+
+                tvCalorie.setText(user.dailyCaloriesTarget + " kcal");
+
+                // OPTIONAL: you can calculate protein/ fat / carbs dynamically:
+                tvProtein.setText(((int) (user.dailyCaloriesTarget * 0.15 / 4)) + " g");
+                tvFat.setText(((int) (user.dailyCaloriesTarget * 0.25 / 9)) + " g");
+                tvCarbs.setText(((int) (user.dailyCaloriesTarget * 0.60 / 4)) + " g");
+
+                tvHeight.setText(user.height + " cm");
+                tvWeight.setText(user.weight + " kg");
+                tvBMI.setText(user.bmi + " (" + user.bmiCategory + ")");
+                tvTarget.setText(user.dailyCaloriesTarget + " kcal"); // or weight target if available
+            }
+
+            @Override
+            public void onFailure(Call<HealthResponse> call, Throwable t) {
+                Toast.makeText(context, "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

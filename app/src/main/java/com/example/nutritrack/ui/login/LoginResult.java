@@ -10,11 +10,20 @@ class LoginResult {
     private LoggedInUserView success;
     @Nullable
     private Integer error;
+    @Nullable
+    private String errorMessage;
 
+    // Constructor for resource ID error
     LoginResult(@Nullable Integer error) {
         this.error = error;
     }
 
+    // Constructor for API string error
+    LoginResult(@Nullable String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    // Constructor for success
     LoginResult(@Nullable LoggedInUserView success) {
         this.success = success;
     }
@@ -27,5 +36,10 @@ class LoginResult {
     @Nullable
     Integer getError() {
         return error;
+    }
+
+    @Nullable
+    String getErrorMessage() {
+        return errorMessage;
     }
 }

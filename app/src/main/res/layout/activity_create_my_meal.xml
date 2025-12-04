@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,28 +13,29 @@
         <!-- Image Placeholder -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp">
+            android:layout_height="220dp">
 
             <ImageView
                 android:id="@+id/mealImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#DDDDDD"
-                android:scaleType="centerCrop"
-                android:contentDescription="Meal image" />
+                android:background="#EEEEEE"
+                android:scaleType="centerCrop" />
 
-            <!-- Upload Image Button -->
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/uploadImageBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Upload Image"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:background="#FFFFFF"
-                android:padding="8dp"
-                android:elevation="4dp" />
+                android:text="Upload Foto"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:cornerRadius="20dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:backgroundTint="#00897B"
+                app:icon="@drawable/baseline_camera_alt_24"
+                app:iconTint="@android:color/white" />
         </FrameLayout>
 
         <!-- Content Section -->
@@ -43,184 +45,171 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Meal Name Input -->
-            <EditText
-                android:id="@+id/etMealName"
+            <!-- Meal Name -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama makanan"
-                android:textSize="18sp"
-                android:padding="12dp"
-                android:textColor="#2C3E50"
-                android:textStyle="bold" />
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Nama Makanan"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
-            <!-- Info Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp">
-
-                <!-- Calories Input -->
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etMealName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:textColor="#2C3E50"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@android:drawable/ic_menu_info_details"
-                        app:tint="#666666"
-                        android:contentDescription="Calories" />
+            <!-- Calories -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Kalori"
+                android:layout_marginTop="16dp"
+                app:prefixText="🔥"
+                app:prefixTextColor="#777"
+                app:suffixText="kcal"
+                app:suffixTextColor="#777">
 
-                    <EditText
-                        android:id="@+id/etCalories"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="Kalori"
-                        android:inputType="number"
-                        android:textColor="#666666"
-                        android:textSize="14sp"
-                        android:layout_marginStart="4dp"
-                        android:maxWidth="80dp" />
-                </LinearLayout>
-            </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCalories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="#2C3E50"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Nutrition Cards -->
+            <!-- Nutrition Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginTop="16dp">
 
                 <!-- Protein -->
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@android:color/white"
-                    android:gravity="center"
-                    android:layout_marginEnd="4dp">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Protein"
+                    android:layout_marginEnd="6dp"
+                    app:suffixText="g"
+                    app:suffixTextColor="#777">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProtein"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="0 g"
                         android:inputType="number"
-                        android:textColor="#2C3E50"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center" />
+                        android:textColor="#2C3E50" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Protein"
-                        android:textColor="#888888"
-                        android:textSize="12sp" />
-                </LinearLayout>
 
                 <!-- Carbs -->
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@android:color/white"
-                    android:gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Karbo"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    app:suffixText="g"
+                    app:suffixTextColor="#777">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etCarbs"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="0 g"
                         android:inputType="number"
-                        android:textColor="#2C3E50"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center" />
+                        android:textColor="#2C3E50" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Carbs"
-                        android:textColor="#888888"
-                        android:textSize="12sp" />
-                </LinearLayout>
 
                 <!-- Fat -->
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:background="@android:color/white"
-                    android:gravity="center"
-                    android:layout_marginStart="4dp">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Lemak"
+                    android:layout_marginStart="6dp"
+                    app:suffixText="g"
+                    app:suffixTextColor="#777">
 
-                    <EditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFat"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="0 g"
                         android:inputType="number"
-                        android:textColor="#2C3E50"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center" />
+                        android:textColor="#2C3E50" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Fat"
-                        android:textColor="#888888"
-                        android:textSize="12sp" />
-                </LinearLayout>
+
             </LinearLayout>
 
             <!-- Ingredients -->
+            <!-- Ingredients Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ingredients"
+                android:text="Bahan-bahan"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#2C3E50" />
+                android:textColor="#2C3E50"
+                android:layout_marginTop="20dp"/>
 
-            <EditText
-                android:id="@+id/etIngredients"
+            <!-- Search box -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ingredientSearchLayout"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:hint="Bahan-bahan (opsional)"
-                android:gravity="top"
-                android:padding="12dp"
-                android:background="@drawable/input_bg"
-                android:textSize="14sp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Cari bahan…"
+                android:layout_marginTop="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ingredientSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:textColor="#2C3E50"
+                    android:textSize="14sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Dynamic Chips -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:singleLine="false"
+                app:chipSpacing="8dp"/>
+
 
             <!-- Save Button -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveMeal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Simpan"
+                android:layout_marginTop="24dp"
                 android:textColor="@android:color/white"
-                android:background="#00897B"
-                android:padding="16dp"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                android:padding="14dp"
+                android:backgroundTint="#00897B" />
 
         </LinearLayout>
     </LinearLayout>

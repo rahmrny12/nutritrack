@@ -66,6 +66,7 @@
                     android:padding="24dp">
 
                     <TextView
+                        android:id="@+id/tvNeedToGain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -74,6 +75,7 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvCaloriesRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -84,6 +86,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvKcalLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -91,6 +94,7 @@
                         android:text="kcal"
                         android:textColor="#333333"
                         android:textSize="18sp" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -105,7 +109,11 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <include layout="@layout/macro_progress_circle_protein" />
+                            <com.example.nutritrack.ui.CircleMacroView
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/circleProtein"
+                                android:layout_width="48dp"
+                                android:layout_height="48dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -122,7 +130,10 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <include layout="@layout/macro_progress_circle_fat" />
+                            <include
+                                android:id="@+id/circleFat"
+                                layout="@layout/macro_progress_circle_fat" />
+
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -138,7 +149,9 @@
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <include layout="@layout/macro_progress_circle_carbs" />
+                            <include
+                                android:id="@+id/circleCarbs"
+                                layout="@layout/macro_progress_circle_carbs" />
 
                             <TextView
                                 android:layout_width="wrap_content"
