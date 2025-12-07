@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.nutritrack.data.model.ApiResponse;
+import com.example.nutritrack.data.model.RegisterRequest;
+import com.example.nutritrack.data.service.RetrofitClient;
+import com.example.nutritrack.data.service.UserService;
 import com.example.nutritrack.ui.login.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -20,6 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -52,73 +60,65 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setEnabled(true);
 
         registerBtn.setOnClickListener(v -> {
-            String nameInput = name.getText().toString().trim();
+
+            String fullname = name.getText().toString().trim();
             String emailInput = email.getText().toString().trim();
             String addressInput = address.getText().toString().trim();
             String passwordInput = password.getText().toString().trim();
             String confirmInput = confirmPassword.getText().toString().trim();
 
-            if (nameInput.isEmpty() || emailInput.isEmpty() || addressInput.isEmpty() ||
+            if (fullname.isEmpty() || emailInput.isEmpty() || addressInput.isEmpty() ||
                     passwordInput.isEmpty() || confirmInput.isEmpty()) {
-                Toast.makeText(RegisterActivity.this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Harap isi semua field", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!passwordInput.equals(confirmInput)) {
-                Toast.makeText(RegisterActivity.this, "Password tidak sama", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Password tidak sama", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            FirebaseAuth mAuth = FirebaseAuth.getInstance();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            RegisterRequest body = new RegisterRequest(
+                    fullname,
+                    emailInput,
+                    passwordInput
+            );
 
-            mAuth.createUserWithEmailAndPassword(emailInput, passwordInput)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // ✅ Registration success
-                            String userId = mAuth.getCurrentUser().getUid();
+            UserService api = RetrofitClient.getInstance().create(UserService.class);
 
-                            DatabaseReference userRef = database.getReference("users").child(userId);
-                            HashMap<String, Object> userMap = new HashMap<>();
-                            userMap.put("name", nameInput);
-                            userMap.put("email", emailInput);
-                            userMap.put("address", addressInput);
-                            userMap.put("password", passwordInput);
+            api.register(body).enqueue(new Callback<ApiResponse>() {
+                @Override
+                public void onResponse(Call<ApiResponse> call,
+                                       Response<ApiResponse> response) {
 
-                            userRef.setValue(userMap)
-                                    .addOnSuccessListener(unused -> {
-                                        Toast.makeText(RegisterActivity.this, "Registrasi berhasil! Silakan login.", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                        intent.putExtra("email", emailInput);
-                                        startActivity(intent);
-                                        finish();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(RegisterActivity.this, "Gagal menyimpan data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    });
+                    if (!response.isSuccessful() || response.body() == null) {
+                        Toast.makeText(RegisterActivity.this, "Server error", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        } else {
-                            Exception e = task.getException();
-                            if (e instanceof FirebaseAuthUserCollisionException) {
-                                // ⚠️ Email already registered
-                                Toast.makeText(RegisterActivity.this, "Email sudah terdaftar, silakan login.", Toast.LENGTH_SHORT).show();
+                    ApiResponse res = response.body();
 
-                                // Kirim email ke LoginActivity agar autofill
-                                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                intent.putExtra("email", emailInput);
-                                startActivity(intent);
-                                finish();
+                    if (res.status.equals("success")) {
 
-                            } else if (e instanceof FirebaseAuthWeakPasswordException) {
-                                Toast.makeText(RegisterActivity.this, "Password terlalu lemah, gunakan minimal 6 karakter.", Toast.LENGTH_SHORT).show();
-                            } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                                Toast.makeText(RegisterActivity.this, "Format email tidak valid.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(RegisterActivity.this, "Registrasi gagal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                        Toast.makeText(RegisterActivity.this, "Registrasi berhasil!", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        intent.putExtra("email", emailInput);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(RegisterActivity.this, res.message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ApiResponse> call, Throwable t) {
+                    Toast.makeText(RegisterActivity.this, "Failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         });
+
 
     }
 }

@@ -104,12 +104,13 @@
             android:clipToPadding="false"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:layout_marginTop="10dp"/>
+            android:paddingBottom="24dp"
+            android:layout_marginTop="12dp"/>
 
 
         <!-- Today's Meal -->
         <TextView
-            android:text="Artikel Pilihan"
+            android:text="@string/title_article"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="18dp"

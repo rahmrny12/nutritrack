@@ -20,6 +20,7 @@ public interface DiaryApiService {
     class ApiResponse {
         public String status;
         public Object data;
+        public String message;
     }
 
     @GET("diary.php")

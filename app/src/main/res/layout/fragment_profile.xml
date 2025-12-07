@@ -8,6 +8,10 @@
     android:background="#F9FAFB"
     tools:context=".ui.profile.ProfileFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:orientation="vertical"
         android:padding="16dp"
@@ -20,11 +24,14 @@
             android:id="@+id/imgProfile"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/sample_profile"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/teal_700"
+            android:src="@drawable/baseline_person_16"
             android:scaleType="centerCrop"
+            android:padding="12dp"
             android:background="@drawable/circle_shape"
-            android:clipToOutline="true"
-            android:layout_marginBottom="12dp" />
+            android:clipToOutline="true"/>
 
         <!-- Nama dan Lokasi -->
         <TextView
@@ -42,22 +49,9 @@
             android:text="Laki-laki"
             android:textSize="14sp"
             android:textColor="#6B6B6B"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <!-- Tombol Edit Profil -->
-        <Button
-            android:id="@+id/btnEditProfile"
-            android:text="Edit Profil"
-            android:backgroundTint="#00ADEF"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="8dp"
-            android:fontFamily="sans-serif-medium" />
 
         <!-- Kartu Kalori Harian -->
         <androidx.cardview.widget.CardView
@@ -324,19 +318,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="18dp"
+            android:orientation="vertical">
+
+            <!-- Tombol Edit Profil -->
             <Button
-                android:id="@+id/btnLogout"
+                android:id="@+id/btnEditProfile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_height="48dp"
                 android:backgroundTint="@color/teal_700"
                 android:elevation="2dp"
                 android:fontFamily="@font/montserrat"
-                android:strokeColor="@color/white"
+                android:text="@string/action_edit_profile"
+                android:textAllCaps="false"
+                android:textColor="@color/white"/>/>
+
+            <!-- Tombol Logout -->
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="@font/montserrat"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
                 android:text="@string/action_logout"
                 android:textAllCaps="false"
-                android:textColor="@color/white"/>
+                android:textColor="@color/teal_700" />
         </LinearLayout>
+
     </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </ScrollView>

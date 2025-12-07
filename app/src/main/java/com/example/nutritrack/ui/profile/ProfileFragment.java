@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import retrofit2.Response;
 import com.example.nutritrack.ForgotPasswordActivity;
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.UserPreferences;
+import com.example.nutritrack.ui.EditProfileActivity;
 import com.example.nutritrack.ui.home.HomeFragment;
 import com.example.nutritrack.ui.login.LoginActivity;
 
@@ -35,6 +37,8 @@ public class ProfileFragment extends Fragment {
     private TextView tvName, tvGender, tvCalorie, tvProtein, tvFat, tvCarbs;
     private TextView tvHeight, tvBMI, tvWeight, tvTarget;
     private Button btnLogout;
+    private Button btnEditProfile;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,6 +60,19 @@ public class ProfileFragment extends Fragment {
         tvWeight = view.findViewById(R.id.tvWeight);
         tvTarget = view.findViewById(R.id.tvTarget);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnEditProfile = view.findViewById(R.id.btnEditProfile);
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
+
+        swipeRefresh.setOnRefreshListener(() -> {
+            fetchUserHealthData(userPref.getUserId(), requireContext());
+        });
+
+
+        btnEditProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            startActivity(intent);
+        });
+
 
         // GET DATA FROM API AGAIN (RECOMMENDED)
         fetchUserHealthData(userPref.getUserId(), view.getContext());
@@ -120,11 +137,19 @@ public class ProfileFragment extends Fragment {
                 tvWeight.setText(user.weight + " kg");
                 tvBMI.setText(user.bmi + " (" + user.bmiCategory + ")");
                 tvTarget.setText(user.dailyCaloriesTarget + " kcal"); // or weight target if available
+
+                if (swipeRefresh != null && swipeRefresh.isRefreshing()) {
+                    swipeRefresh.setRefreshing(false);
+                }
             }
 
             @Override
             public void onFailure(Call<HealthResponse> call, Throwable t) {
                 Toast.makeText(context, "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show();
+
+                if (swipeRefresh != null && swipeRefresh.isRefreshing()) {
+                    swipeRefresh.setRefreshing(false);
+                }
             }
         });
 

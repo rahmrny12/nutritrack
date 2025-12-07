@@ -1,5 +1,6 @@
 package com.example.nutritrack.ui.log_food;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.nutritrack.MealDetailDialog;
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.MealModel;
 import com.example.nutritrack.data.service.MealApiService;
@@ -32,12 +36,34 @@ public class FoodMyMealsFragment extends Fragment {
     private RecyclerView recyclerView;
     private MealAdapter adapter;
     private List<MealModel> mealList = new ArrayList<>();
+    private ActivityResultLauncher<Intent> mealDetailLauncher;
+    private OnMealUpdatedListener mealUpdateListener;
+
+    public interface OnMealUpdatedListener {
+        void onMealUpdated();
+    }
+
+    public void setOnMealUpdatedListener(OnMealUpdatedListener listener) {
+        this.mealUpdateListener = listener;
+    }
 
     public FoodMyMealsFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_food_my_meals, container, false);
+
+        mealDetailLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (mealUpdateListener != null) {
+                            mealUpdateListener.onMealUpdated();  // Notify parent
+                        }
+                    }
+                }
+        );
+
 
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
         recyclerView = view.findViewById(R.id.recyclerMyMeals);
@@ -52,9 +78,19 @@ public class FoodMyMealsFragment extends Fragment {
 
             @Override
             public void onTap(MealModel meal) {
-                Intent intent = new Intent(getContext(), MealDetailActivity.class);
-                intent.putExtra("meal", meal); // <-- passing the object
-                startActivity(intent);
+                MealDetailDialog dialog = new MealDetailDialog(meal);
+                dialog.show(getActivity().getSupportFragmentManager(), "mealDetail");
+                getParentFragmentManager().setFragmentResultListener(
+                        "meal_added", getActivity(), (key, bundle) -> {
+
+                            boolean refresh = bundle.getBoolean("refresh");
+
+                            if (refresh) {
+                                if (mealUpdateListener != null) {
+                                    mealUpdateListener.onMealUpdated();  // Notify parent
+                                }
+                            };
+                        });
             }
         });
 

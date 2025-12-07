@@ -15,7 +15,7 @@
             android:layout_marginHorizontal="12dp">
 
             <TextView
-                android:text="Calorie Goal : "
+                android:text="@string/title_calorie_goal_card"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -28,14 +28,14 @@
                 android:text="1280 cal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#00ADEF"
+                android:textColor="@color/teal_500"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center"/>
 
             <TextView
-                android:text="Remaining = Goal - Food"
+                android:text="@string/subtitle_calorie_goal_card"
                 android:textSize="13sp"
                 android:textColor="#6B6B6B"
                 android:layout_marginTop="4dp"
@@ -65,7 +65,7 @@
                         android:layout_height="24dp"/>
 
                     <TextView
-                        android:text="Food"
+                        android:text="@string/txt_progress_food"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp"
@@ -101,19 +101,20 @@
                         android:text="1,000\nRemaining"
                         android:gravity="center"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#00BCD4"
+                        android:textColor="@color/grey"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <!-- Water -->
                 <LinearLayout
+                    android:id="@+id/btnWater"
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:padding="6dp">
 
                     <ImageView
                         android:src="@drawable/ic_water"
@@ -121,7 +122,7 @@
                         android:layout_height="24dp"/>
 
                     <TextView
-                        android:text="Water"
+                        android:text="@string/txt_progress_water"
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:layout_marginTop="4dp"
@@ -138,6 +139,7 @@
                         android:progressDrawable="@drawable/progress_water"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
+
 
             </LinearLayout>
         </LinearLayout>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"/>
+
+        <!-- Title -->
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Berapa banyak air yang kamu minum hari ini?"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Total Drink Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/bg_card"
+            android:padding="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:id="@+id/txtTotalDrink"
+                android:layout_width="wrap_content"
+                android:text="0 ml"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#000" />
+        </LinearLayout>
+
+        <!-- Daily Goal -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:id="@+id/txtGoal"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:text="Your Daily Goal : 1,200 ml"
+            android:textColor="#000"
+            android:textSize="16sp" />
+
+        <!-- Bottles Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <!-- Bottle 250 -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_bottle_small"
+                    android:layout_width="60dp"
+                    android:layout_height="100dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="250 ml"
+                    android:textSize="14sp"
+                    android:layout_marginTop="6dp" />
+
+                <ImageButton
+                    android:id="@+id/btn250"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@drawable/round_button_light" />
+            </LinearLayout>
+
+            <!-- Bottle 500 -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_bottle_medium"
+                    android:layout_width="65dp"
+                    android:layout_height="120dp" />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:text="500 ml"
+                    android:layout_marginTop="6dp"
+                    android:layout_width="wrap_content"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/btn500"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@drawable/round_button_light" />
+            </LinearLayout>
+
+            <!-- Bottle 1000 -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_bottle_large"
+                    android:layout_width="70dp"
+                    android:layout_height="150dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1000 ml"
+                    android:textSize="14sp"
+                    android:layout_marginTop="6dp" />
+
+                <ImageButton
+                    android:id="@+id/btn1000"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@drawable/round_button_light" />
+            </LinearLayout>
+
+            <!-- Custom -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_bottle_custom"
+                    android:layout_width="65dp"
+                    android:layout_height="130dp" />
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Custom"
+                    android:textSize="14sp"
+                    android:layout_marginTop="6dp" />
+
+                <ImageButton
+                    android:id="@+id/btnCustom"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_add"
+                    android:background="@drawable/round_button_light" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Save Button -->
+        <Button
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSave"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:background="#D3D3D3"
+            android:text="Save"
+            android:textColor="#000"
+            android:padding="14dp"
+            android:textSize="16sp"
+            android:enabled="false"/>
+    </LinearLayout>
+
+</ScrollView>

@@ -1,6 +1,7 @@
 package com.example.nutritrack.data.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.ArticleModel;
+import com.example.nutritrack.ui.ArticleDetailActivity;
 
 import java.util.List;
 
@@ -39,6 +41,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         h.tvDesc.setText(a.content.length() > 100 ? a.content.substring(0, 100) + "..." : a.content);
         h.tvCategory.setText("Health");
         h.tvDate.setText(a.createdAt);
+
+        h.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ArticleDetailActivity.class);
+            intent.putExtra("article", a);
+            context.startActivity(intent);
+        });
+
     }
 
     @Override

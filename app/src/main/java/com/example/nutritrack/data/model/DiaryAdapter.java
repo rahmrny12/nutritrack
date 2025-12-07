@@ -258,7 +258,6 @@ public class DiaryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public MealViewHolder(View itemView) {
             super(itemView);
 
-            imgMeal = itemView.findViewById(R.id.imgMeal);
             mealName = itemView.findViewById(R.id.mealName);
             mealNutrition = itemView.findViewById(R.id.mealNutrition);
             mealCalories = itemView.findViewById(R.id.mealCalories);
@@ -333,7 +332,6 @@ public class DiaryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             for (MealModel m : meals) {
                 View row = inflater.inflate(R.layout.item_meal, containerMeals, false);
 
-                ImageView imgMeal = row.findViewById(R.id.imgMeal);
                 TextView mealName = row.findViewById(R.id.mealName);
                 TextView mealNutrition = row.findViewById(R.id.mealNutrition);
                 TextView mealCalories = row.findViewById(R.id.mealCalories);
@@ -341,8 +339,6 @@ public class DiaryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 mealName.setText(m.getMealsName());
                 mealNutrition.setText("Carbs " + m.getCarbs() + "g • Protein " + m.getProtein() + "g • Fat " + m.getFat() + "g");
                 mealCalories.setText(((int) m.getCalories()) + " kcal");
-
-                imgMeal.setImageResource(R.drawable.ic_food_placeholder);
 
                 containerMeals.addView(row);
             }

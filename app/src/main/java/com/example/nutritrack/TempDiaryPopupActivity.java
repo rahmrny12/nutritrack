@@ -61,15 +61,15 @@ public class TempDiaryPopupActivity extends AppCompatActivity {
         String category;
 
         if (hour >= 4 && hour < 11) {
-            category = "Breakfast";
+            category = getString(R.string.txt_breakfast);
         } else if (hour >= 11 && hour < 16) {
-            category = "Lunch";
+            category = getString(R.string.txt_lunch);
         } else {
-            category = "Dinner";
+            category = getString(R.string.txt_dinner);
         }
 
         // Update UIs
-        diaryText.setText(category + " Time");
+        diaryText.setText(category);
     }
 
     private void saveDiary() {
@@ -114,6 +114,17 @@ public class TempDiaryPopupActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
+
+                    DiaryApiService.ApiResponse res = response.body();
+                    if (res.status != null && res.status.equalsIgnoreCase("error")) {
+                        Toast.makeText(
+                                TempDiaryPopupActivity.this,
+                                res.message,
+                                Toast.LENGTH_LONG
+                        ).show();
+                        return;
+                    }
+
 
                     Toast.makeText(TempDiaryPopupActivity.this,
                             "Berhasil menyimpan 1 item diary",

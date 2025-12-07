@@ -1,6 +1,8 @@
 package com.example.nutritrack.data.model;
 
-public class FoodModel {
+import java.io.Serializable;
+
+public class FoodModel implements Serializable {
     private Integer id;
     private String foodsName;
     private double caloriesPerUnit;

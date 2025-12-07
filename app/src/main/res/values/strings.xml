@@ -80,6 +80,33 @@
     <string name="action_forgot_pass">Reset</string>
     <string name="action_logout">Logout</string>
     <string name="txtMotivation">Perubahan besar dimulai dari langkah kecil.</string>
+    <string name="title_nav_home">Beranda</string>
+    <string name="title_nav_report">Ringkasan</string>
+    <string name="title_nav_log">Asupan</string>
+    <string name="title_nav_diary">Harian</string>
+    <string name="title_nav_profile">Profil</string>
+    <string name="subtitle_calorie_goal_card">Sisa Kalori = Target - Total Konsumsi</string>
+    <string name="title_calorie_goal_card">Target Kalori</string>
+    <string name="txt_remaining_goal_calorie">Sisa Kalori</string>
+    <string name="txt_progress_food">Asupan</string>
+    <string name="txt_progress_water">Air</string>
+    <string name="title_article">Artikel Pilihan</string>
+    <string name="txt_back_btn">Kembali</string>
+    <string name="txt_tab_all">Semua Makanan</string>
+    <string name="txt_tab_meals">Menu Harian</string>
+    <string name="title_weight_progress">Progress Berat Badan</string>
+    <string name="txt_no_log">Catatan Kosong</string>
+    <string name="title_ai_insight">Rekomendasi Pintar</string>
+    <string name="subtitle_weight_progress">Lihat perkembangan berat badanmu setiap hari</string>
+    <string name="title_daily_calories">Konsumsi Harian</string>
+    <string name="txt_still_need_to_gain">Sisa Kalori Dibutuhkan</string>
+    <string name="title_weekly_report">Ringkasan Mingguan</string>
+    <string name="action_edit_profile">Perbarui Profil</string>
+    <string name="txt_breakfast">Sarapan</string>
+    <string name="txt_lunch">Makan Siang</string>
+    <string name="txt_dinner">Makan Malam</string>
+    <string name="action_save">Simpan</string>
+    <string name="txt_search_food">Cari makanan...</string>
 
     <string-array name="meal_categories">
         <item>Breakfast</item>

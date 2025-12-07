@@ -48,7 +48,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
-
+    implementation("com.github.yuyakaido:CardStackView:v2.3.4")
 
     implementation(libs.appcompat)
     implementation(libs.material)

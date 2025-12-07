@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.nutritrack.R;
 import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.service.DiaryTempStore;
 
 import java.util.List;
 
@@ -32,6 +33,12 @@ public class TempDiaryPopupAdapter extends ArrayAdapter<DiaryItemModel> {
         ((TextView) rowView.findViewById(R.id.name)).setText(item.getName());
         ((TextView) rowView.findViewById(R.id.info))
                 .setText(item.getCalories() + " cal • " + item.getCarbs() + "c • " + item.getProtein() + "p • " + item.getFat() + "f");
+
+        rowView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+            DiaryTempStore.getInstance().removeItem(item); // remove from store
+            list.remove(item); // remove by object, not index
+            notifyDataSetChanged();                        // refresh popup
+        });
 
         return rowView;
     }

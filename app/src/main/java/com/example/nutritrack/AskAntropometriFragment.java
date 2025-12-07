@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.nutritrack.data.model.GeneralResponse;
+import com.example.nutritrack.data.model.UpdateUserHealthResponse;
 import com.example.nutritrack.data.model.HealthResponse;
 import com.example.nutritrack.data.model.UserPreferences;
 import com.example.nutritrack.data.service.HealthApiService;
@@ -158,9 +158,9 @@ public class AskAntropometriFragment extends Fragment {
         map.put("gender", gender);
         // gender bisa ambil dari sharedPrefs jika disimpan
 
-        api.updateHealth(map).enqueue(new Callback<GeneralResponse>() {
+        api.updateHealth(map).enqueue(new Callback<UpdateUserHealthResponse>() {
             @Override
-            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
+            public void onResponse(Call<UpdateUserHealthResponse> call, Response<UpdateUserHealthResponse> response) {
 
                 if (!response.isSuccessful() || response.body() == null) {
                     Toast.makeText(getContext(), "Failed updating data", Toast.LENGTH_SHORT).show();
@@ -172,8 +172,10 @@ public class AskAntropometriFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GeneralResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<UpdateUserHealthResponse> call, Throwable t) {
+                String msg = t.getMessage();
+
+                Toast.makeText(getContext(), "Error: " + msg, Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -99,7 +99,11 @@ public class DiaryFragment extends Fragment {
                 // HEADER
                 itemList.add(new DiaryItem(DiaryItem.TYPE_HEADER));
 
-                String[] categories = {"Breakfast", "Lunch", "Dinner"};
+                String[] categories = new String[] {
+                        getString(R.string.txt_breakfast),
+                        getString(R.string.txt_lunch),
+                        getString(R.string.txt_dinner)
+                };
 
                 for (String category : categories) {
 

@@ -27,4 +27,8 @@ public class DiaryTempStore {
     public void clear() {
         diaryList.clear();
     }
+
+    public void removeItem(DiaryItemModel item) {
+        diaryList.remove(item);
+    }
 }

@@ -36,12 +36,13 @@ import retrofit2.Response;
  * Use the {@link FoodAllFragment#} factory method to
  * create an instance of this fragment.
  */
-public class FoodAllFragment extends Fragment {
+public class FoodAllFragment extends Fragment implements LogFoodFragment.Searchable {
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView recyclerView;
     private FoodAdapter adapter;
     private List<FoodModel> foodList = new ArrayList<>();
+    private String pendingQuery = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class FoodAllFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerIngredients);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         adapter = new FoodAdapter(foodList, food -> {
             LogFoodFragment parent = (LogFoodFragment) getParentFragment();
             if (parent != null) {
@@ -65,6 +67,23 @@ public class FoodAllFragment extends Fragment {
         swipeRefresh.setOnRefreshListener(this::loadFoods);
 
         return view;
+    }
+
+    @Override
+    public void onSearchQuery(String query) {
+
+        if (adapter == null) {
+            pendingQuery = query;
+            return;
+        }
+
+        // Jika data belum masuk, simpan dulu query-nya
+        if (foodList == null || foodList.isEmpty()) {
+            pendingQuery = query;
+            return;
+        }
+
+        adapter.getFilter().filter(query);
     }
 
     private void loadFoods() {
@@ -82,12 +101,19 @@ public class FoodAllFragment extends Fragment {
 
                 foodList.clear();
                 foodList.addAll(response.body());
+                adapter.fullList.clear();
+                adapter.fullList.addAll(response.body());
                 adapter.notifyDataSetChanged();
+
+                // Jalankan search setelah data masuk
+                if (pendingQuery != null) {
+                    adapter.getFilter().filter(pendingQuery);
+                    pendingQuery = null;
+                }
             }
 
             @Override
             public void onFailure(Call<List<FoodModel>> call, Throwable t) {
-                Log.e("API_ERROR", t.getMessage(), t);
                 swipeRefresh.setRefreshing(false);
             }
         });

@@ -1,16 +1,25 @@
 package com.example.nutritrack.ui.log_food;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +48,9 @@ public class LogFoodFragment extends Fragment {
     private LinearLayout tabAll, tabMyMeals;
     private View indicatorAll, indicatorMyMeals;
     private String currentSelectedCategory = "Breakfast";
-    FloatingActionButton fab;
-    TextView fabBadge;
+    private FloatingActionButton fab;
+    private TextView fabBadge;
+    private AppCompatEditText searchEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +62,16 @@ public class LogFoodFragment extends Fragment {
         indicatorMyMeals = view.findViewById(R.id.indicatorMyMeals);
         fab = view.findViewById(R.id.btnDiaryAction);
         fabBadge = view.findViewById(R.id.fabBadge);
+        searchEditText = view.findViewById(R.id.searchview);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sendSearchQueryToChild(s.toString());
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+        });
 
 
         updateFabVisibility();
@@ -77,29 +97,11 @@ public class LogFoodFragment extends Fragment {
         });
 
         tabMyMeals.setOnClickListener(v -> {
-            replaceFragment(new FoodMyMealsFragment());
+            FoodMyMealsFragment frag = new FoodMyMealsFragment();
+            frag.setOnMealUpdatedListener(this::updateFabVisibility);
+            replaceFragment(frag);
+
             activateMyMeals();
-        });
-
-        Spinner spinner = view.findViewById(R.id.spinnerKategori);
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                getContext(),
-                R.array.meal_categories,
-                android.R.layout.simple_spinner_item
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                currentSelectedCategory = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
         });
 
 // Auto-select based on time
@@ -115,14 +117,18 @@ public class LogFoodFragment extends Fragment {
         } else {
             selectedCategory = "Dinner";
         }
-
-        // Set selection
-        int position = adapter.getPosition(selectedCategory);
-        spinner.setSelection(position);
-        currentSelectedCategory = selectedCategory;
-
         return view;
     }
+
+    private void sendSearchQueryToChild(String query) {
+        Fragment activeFragment = getChildFragmentManager()
+                .findFragmentById(R.id.fragmentContainer);
+
+        if (activeFragment instanceof Searchable) {
+            ((Searchable) activeFragment).onSearchQuery(query);
+        }
+    }
+
 
     private void openCreateMeal() {
         // Jika mau buka Activity
@@ -212,6 +218,9 @@ public class LogFoodFragment extends Fragment {
             fabBadge.setVisibility(View.VISIBLE);
             fabBadge.setText(count > 99 ? "99+" : String.valueOf(count));
         }
+    }
+    public interface Searchable {
+        void onSearchQuery(String query);
     }
 
 }

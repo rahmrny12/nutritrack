@@ -45,7 +45,7 @@
     <!-- SAVE BUTTON -->
     <Button
         android:id="@+id/btnSaveDiary"
-        android:text="Save"
+        android:text="@string/action_save"
         android:textStyle="bold"
         android:textSize="16sp"
         android:backgroundTint="@color/teal_700"

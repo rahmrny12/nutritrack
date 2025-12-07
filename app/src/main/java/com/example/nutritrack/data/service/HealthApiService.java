@@ -1,8 +1,9 @@
 package com.example.nutritrack.data.service;
 
 import com.example.nutritrack.data.model.DailyGoalResponse;
-import com.example.nutritrack.data.model.GeneralResponse;
+import com.example.nutritrack.data.model.UpdateUserHealthResponse;
 import com.example.nutritrack.data.model.HealthResponse;
+import com.example.nutritrack.data.model.ProgressResponse;
 
 import java.util.HashMap;
 
@@ -19,12 +20,17 @@ public interface HealthApiService {
     );
 
     @POST("auth.php?action=update_health")
-    Call<GeneralResponse> updateHealth(@Body HashMap<String, String> body);
+    Call<UpdateUserHealthResponse> updateHealth(@Body HashMap<String, String> body);
 
     @GET("daily_goals.php")
     Call<DailyGoalResponse> getDailyGoal(
             @Query("userId") String userId,
             @Query("date") String date
+    );
+
+    @GET("auth.php?action=get_progress")
+    Call<ProgressResponse> getProgress(
+            @Query("id") String userId
     );
 
 }

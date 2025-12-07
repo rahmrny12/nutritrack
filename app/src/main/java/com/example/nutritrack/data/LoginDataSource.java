@@ -52,6 +52,7 @@ public class LoginDataSource {
 
                 if (!"success".equals(res.status)) {
                     callback.onResult(new Result.Error(new IOException("Login gagal: " + res.message)));
+                    return;
                 }
 
                 // Convert ke LoggedInUser kamu

@@ -12,7 +12,7 @@
         android:id="@+id/tvNeedToGain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Still need to gain"
+        android:text="@string/txt_still_need_to_gain"
         android:layout_gravity="center_horizontal"
         android:textSize="16sp"
         android:textColor="#333"/>

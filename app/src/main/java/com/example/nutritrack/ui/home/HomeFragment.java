@@ -1,5 +1,6 @@
 package com.example.nutritrack.ui.home;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -25,9 +26,11 @@ import com.example.nutritrack.data.model.ArticleModel;
 import com.example.nutritrack.data.model.DateAdapter;
 import com.example.nutritrack.data.model.DateModel;
 import com.example.nutritrack.data.model.MonthlySummaryResponse;
+import com.example.nutritrack.data.model.ProgressResponse;
 import com.example.nutritrack.data.model.UserPreferences;
 import com.example.nutritrack.data.service.ArticleApiService;
 import com.example.nutritrack.data.service.DiaryApiService;
+import com.example.nutritrack.data.service.HealthApiService;
 import com.example.nutritrack.data.service.RetrofitClient;
 import com.example.nutritrack.databinding.FragmentHomeBinding;
 
@@ -42,6 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.example.nutritrack.ui.ArticleDetailActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -120,6 +124,7 @@ public class HomeFragment extends Fragment {
         userId = userPrefs.getUserId();
         binding.tvHello.setText(userPrefs.getUserName());
 
+
         setupDateSelector();
         setupCarousel();
 
@@ -127,6 +132,7 @@ public class HomeFragment extends Fragment {
 
         articleContainer = binding.articleContainer;
         loadArticles();
+        fetchProgressGraph();
 
         return root;
     }
@@ -165,7 +171,9 @@ public class HomeFragment extends Fragment {
 
                 // Optional: click listener
                 item.setOnClickListener(v -> {
-                    // open article detail
+                    Intent intent = new Intent(getContext(), ArticleDetailActivity.class);
+                    intent.putExtra("article", article);
+                    startActivity(intent);
                 });
 
                 articleContainer.addView(item);
@@ -240,6 +248,38 @@ public class HomeFragment extends Fragment {
         });
 
     }
+
+    private void fetchProgressGraph() {
+
+        HealthApiService
+                api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        api.getProgress(userId).enqueue(new Callback<ProgressResponse>() {
+            @Override
+            public void onResponse(Call<ProgressResponse> call, Response<ProgressResponse> response) {
+
+                if (!response.isSuccessful() || response.body() == null) return;
+
+                List<ProgressResponse.Entry> apiList = response.body().data.history;
+
+                List<HomeCarouselAdapter.ProgressEntry> list = new ArrayList<>();
+
+                for (ProgressResponse.Entry e : apiList) {
+                    list.add(new HomeCarouselAdapter.ProgressEntry(
+                            (float) e.weight,
+                            e.createdAt
+                    ));
+                }
+
+                // SEND TO VIEWPAGER ADAPTER
+                homeCarouselAdapter.setProgressData(list);
+            }
+
+            @Override
+            public void onFailure(Call<ProgressResponse> call, Throwable t) {}
+        });
+    }
+
 
     /* ------------------------------------------------------------
        API → Monthly Summary

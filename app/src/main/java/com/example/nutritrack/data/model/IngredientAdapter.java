@@ -39,8 +39,6 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
         h.tvName.setText(m.name);
         h.tvInfo.setText(m.calories + " cal, " + m.grams + " g");
-
-        h.btnAdd.setOnClickListener(v -> listener.onAdd(m));
     }
 
     @Override
@@ -48,13 +46,11 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName, tvInfo;
-        ImageButton btnAdd;
 
         public ViewHolder(View v) {
             super(v);
             tvName = v.findViewById(R.id.txtFoodName);
             tvInfo = v.findViewById(R.id.txtFoodInfo);
-            btnAdd = v.findViewById(R.id.btnAddFood);
         }
     }
 }

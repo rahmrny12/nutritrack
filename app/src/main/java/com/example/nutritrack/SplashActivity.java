@@ -91,63 +91,70 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private void fetchDailyGoals(String userId, boolean isHealthComplete) {
+        private void fetchDailyGoals(String userId, boolean isHealthComplete) {
 
-        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        UserPreferences prefs = new UserPreferences(this);
+            UserPreferences prefs = new UserPreferences(this);
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        Log.d("SPLASH_FLOW", "Request GET DailyGoal… (user=" + userId + ", date=" + today + ")");
+            String savedDate = prefs.getSavedDailyGoalDate();
+            String savedRec = prefs.getRecommendationJson();
 
-        HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+            // ⭐ SKIP API IF RECOMMENDATION IS ALREADY SAVED FOR TODAY
+            if (savedDate != null
+                    && savedDate.equals(today)
+                    && savedRec != null
+                    && !savedRec.trim().isEmpty()
+                    && !savedRec.equals("null")) {
 
-        api.getDailyGoal(userId, today).enqueue(new Callback<DailyGoalResponse>() {
-            @Override
-            public void onResponse(Call<DailyGoalResponse> call, Response<DailyGoalResponse> response) {
-
-                Log.d("DAILY_GOAL_DEBUG", "---- onResponse Triggered ----");
-                Log.d("DAILY_GOAL_DEBUG", "HTTP CODE: " + response.code());
-                Log.d("DAILY_GOAL_DEBUG", "RAW RESPONSE: " + response.raw().toString());
-
-                if (!response.isSuccessful() || response.body() == null) {
-                    Log.e("DAILY_GOAL_DEBUG", "Daily Goal request FAILED");
-                    navigateAfterLoad(isHealthComplete);
-                    return;
-                }
-
-                DailyGoalResponse.Data d = response.body().data;
-
-                if (d == null) {
-                    Log.e("DAILY_GOAL_DEBUG", "Daily Goal Data is NULL!");
-                    navigateAfterLoad(isHealthComplete);
-                    return;
-                }
-
-                Log.d("DAILY_GOAL_DEBUG", "Tanggal = " + d.tanggal);
-                Log.d("DAILY_GOAL_DEBUG", "Consumed Calories = " + d.consumed.calories);
-
-                String recJson = (d.recommendation != null)
-                        ? new Gson().toJson(d.recommendation)
-                        : null;
-
-                prefs.saveDailyGoals(
-                        d.tanggal,
-                        d.goal.calorieGoal,
-                        d.goal.proteinGoal,
-                        d.goal.carbsGoal,
-                        d.goal.fatGoal,
-                        recJson
-                );
-
+                Log.d("DAILY_GOAL_DEBUG", "Recommendation for today already exists → SKIP API");
                 navigateAfterLoad(isHealthComplete);
+                return;
             }
 
-            @Override
-            public void onFailure(Call<DailyGoalResponse> call, Throwable t) {
-                Log.e("DAILY_GOAL_DEBUG", "onFailure: " + t.getMessage());
-                navigateAfterLoad(isHealthComplete);
-            }
-        });
-    }
+            Log.d("SPLASH_FLOW", "Request GET DailyGoal… (user=" + userId + ", date=" + today + ")");
+
+            HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+            api.getDailyGoal(userId, today).enqueue(new Callback<DailyGoalResponse>() {
+                @Override
+                public void onResponse(Call<DailyGoalResponse> call, Response<DailyGoalResponse> response) {
+
+                    Log.d("DAILY_GOAL_DEBUG", "---- onResponse Triggered ----");
+                    Log.d("DAILY_GOAL_DEBUG", "HTTP CODE: " + response.code());
+
+                    if (!response.isSuccessful() || response.body() == null) {
+                        navigateAfterLoad(isHealthComplete);
+                        return;
+                    }
+
+                    DailyGoalResponse.Data d = response.body().data;
+                    if (d == null) {
+                        navigateAfterLoad(isHealthComplete);
+                        return;
+                    }
+
+                    String recJson = (d.recommendation != null)
+                            ? new Gson().toJson(d.recommendation)
+                            : null;
+
+                    prefs.saveDailyGoals(
+                            d.tanggal,
+                            d.goal.calorieGoal,
+                            d.goal.proteinGoal,
+                            d.goal.carbsGoal,
+                            d.goal.fatGoal,
+                            recJson
+                    );
+
+                    navigateAfterLoad(isHealthComplete);
+                }
+
+                @Override
+                public void onFailure(Call<DailyGoalResponse> call, Throwable t) {
+                    navigateAfterLoad(isHealthComplete);
+                }
+            });
+        }
 
     private void navigateAfterLoad(boolean isHealthComplete) {
         Log.d("SPLASH_FLOW", "Navigating… isHealthComplete=" + isHealthComplete);
