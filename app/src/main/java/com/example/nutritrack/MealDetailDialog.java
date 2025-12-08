@@ -15,10 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.model.DiaryDetail;
 import com.example.nutritrack.data.model.FoodModel;
 import com.example.nutritrack.data.model.MealModel;
-import com.example.nutritrack.data.service.DiaryTempStore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,7 +79,7 @@ public class MealDetailDialog extends DialogFragment {
         String name = "";
         double calories = 0, carbs = 0, protein = 0, fat = 0;
 
-        DiaryItemModel diaryItem;
+        DiaryDetail diaryItem;
 
         if (type.equals("meal")) {
 
@@ -92,7 +91,7 @@ public class MealDetailDialog extends DialogFragment {
             protein = m.getProtein();
             fat = m.getFat();
 
-            diaryItem = new DiaryItemModel(
+            diaryItem = new DiaryDetail(
                     name, calories, carbs, protein, fat, type, time
             );
 
@@ -106,7 +105,7 @@ public class MealDetailDialog extends DialogFragment {
             name = ing.getFoodsName();
             calories = ing.getCaloriesPerUnit();
 
-            diaryItem = new DiaryItemModel(
+            diaryItem = new DiaryDetail(
                     name, calories, carbs, protein, fat, "food", time
             );
 
@@ -117,9 +116,7 @@ public class MealDetailDialog extends DialogFragment {
             return;
         }
 
-        // Save into temporary store
-        DiaryTempStore.getInstance().addItem(diaryItem);
-
+        // TODO: add save diary
         Toast.makeText(getContext(), "Added to diary!", Toast.LENGTH_SHORT).show();
     }
 

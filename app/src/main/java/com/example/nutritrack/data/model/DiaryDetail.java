@@ -1,6 +1,6 @@
 package com.example.nutritrack.data.model;
 
-public class DiaryItemModel {
+public class DiaryDetail {
 
     private String name;
     private double calories;
@@ -9,12 +9,13 @@ public class DiaryItemModel {
     private double fat;
     private String type; // "meal" or "food"
     private String time;
+    private String category;
 
     private Integer mealId; // ID meal dari API
     private Integer foodId; // ID food dari API
 
-    public DiaryItemModel(String name, double calories, double carbs,
-                          double protein, double fat, String type, String time) {
+    public DiaryDetail(String name, double calories, double carbs,
+                       double protein, double fat, String type, String time) {
         this.name = name;
         this.calories = calories;
         this.carbs = carbs;
@@ -40,7 +41,7 @@ public class DiaryItemModel {
     public double getProtein() { return protein; }
     public double getFat() { return fat; }
     public String getType() { return type; }
-    public String getTime() { return time; }
+    public String getCategory() { return time; }
 
     public Integer getMealId() { return mealId; }
     public Integer getFoodId() { return foodId; }

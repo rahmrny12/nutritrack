@@ -8,17 +8,17 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.nutritrack.R;
-import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.model.DiaryDetail;
 import com.example.nutritrack.data.service.DiaryTempStore;
 
 import java.util.List;
 
-public class TempDiaryPopupAdapter extends ArrayAdapter<DiaryItemModel> {
+public class TempDiaryPopupAdapter extends ArrayAdapter<DiaryDetail> {
 
     private Activity context;
-    private List<DiaryItemModel> list;
+    private List<DiaryDetail> list;
 
-    public TempDiaryPopupAdapter(Activity context, List<DiaryItemModel> list) {
+    public TempDiaryPopupAdapter(Activity context, List<DiaryDetail> list) {
         super(context, R.layout.item_popup_diary, list);
         this.context = context;
         this.list = list;
@@ -28,7 +28,7 @@ public class TempDiaryPopupAdapter extends ArrayAdapter<DiaryItemModel> {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.item_popup_diary, null, true);
 
-        DiaryItemModel item = list.get(position);
+        DiaryDetail item = list.get(position);
 
         ((TextView) rowView.findViewById(R.id.name)).setText(item.getName());
         ((TextView) rowView.findViewById(R.id.info))

@@ -107,6 +107,7 @@
     <string name="txt_dinner">Makan Malam</string>
     <string name="action_save">Simpan</string>
     <string name="txt_search_food">Cari makanan...</string>
+    <string name="action_today_logged_meal">Asupan Hari ini: </string>
 
     <string-array name="meal_categories">
         <item>Breakfast</item>

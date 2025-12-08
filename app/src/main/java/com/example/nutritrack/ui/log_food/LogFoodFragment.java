@@ -1,13 +1,9 @@
 package com.example.nutritrack.ui.log_food;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 
@@ -16,41 +12,39 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import androidx.appcompat.widget.SearchView;
-import android.widget.Spinner;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.nutritrack.R;
-import com.example.nutritrack.TempDiaryPopupActivity;
-import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.model.DiaryDetail;
+import com.example.nutritrack.data.model.DiaryModel;
 import com.example.nutritrack.data.model.FoodModel;
-import com.example.nutritrack.data.model.IngredientModel;
 import com.example.nutritrack.data.model.MealModel;
-import com.example.nutritrack.data.service.DiaryTempStore;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.nutritrack.data.model.UserPreferences;
+import com.example.nutritrack.data.service.DiaryApiService;
+import com.example.nutritrack.data.service.RetrofitClient;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LogFoodFragment#} factory method to
- * create an instance of this fragment.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LogFoodFragment extends Fragment {
 
     private LinearLayout tabAll, tabMyMeals;
     private View indicatorAll, indicatorMyMeals;
-    private String currentSelectedCategory = "Breakfast";
-    private FloatingActionButton fab;
-    private TextView fabBadge;
+    private TextView tvDailyCount;
     private AppCompatEditText searchEditText;
+
+    private int apiDiaryCount = 0; // count from API (today)
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,34 +54,33 @@ public class LogFoodFragment extends Fragment {
         tabMyMeals = view.findViewById(R.id.tabMyMeals);
         indicatorAll = view.findViewById(R.id.indicatorAll);
         indicatorMyMeals = view.findViewById(R.id.indicatorMyMeals);
-        fab = view.findViewById(R.id.btnDiaryAction);
-        fabBadge = view.findViewById(R.id.fabBadge);
+        tvDailyCount = view.findViewById(R.id.tvDailyCount);
         searchEditText = view.findViewById(R.id.searchview);
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                sendSearchQueryToChild(s.toString());
-            }
 
+        // 🔍 Search listener
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void afterTextChanged(Editable s) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sendSearchQueryToChild(s.toString());
+            }
         });
 
+        // Load diary count from API at startup
+        loadTodayDiaryCountFromAPI();
 
-        updateFabVisibility();
-
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), TempDiaryPopupActivity.class);
-            startActivity(intent);
+        // Click = open Diary tab
+        tvDailyCount.setOnClickListener(v -> {
+            BottomNavigationView navView = requireActivity().findViewById(R.id.nav_view);
+            navView.setSelectedItemId(R.id.navigation_diary);
         });
 
-        LinearLayout btnCreateMeal = view.findViewById(R.id.btnCreateMeal);
+        // Create meal button
+        view.findViewById(R.id.btnCreateMeal).setOnClickListener(v ->
+                startActivity(new Intent(getContext(), CreateMyMealActivity.class))
+        );
 
-        btnCreateMeal.setOnClickListener(v -> {
-            openCreateMeal();
-        });
-
-        // DEFAULT → ALL
+        // Default tab
         replaceFragment(new FoodAllFragment());
         activateAll();
 
@@ -98,49 +91,147 @@ public class LogFoodFragment extends Fragment {
 
         tabMyMeals.setOnClickListener(v -> {
             FoodMyMealsFragment frag = new FoodMyMealsFragment();
-            frag.setOnMealUpdatedListener(this::updateFabVisibility);
+            frag.setOnMealUpdatedListener(this::updateDailyCountDisplay);
             replaceFragment(frag);
-
             activateMyMeals();
         });
 
-// Auto-select based on time
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-
-        String selectedCategory;
-
-        if (hour >= 4 && hour < 11) {
-            selectedCategory = "Breakfast";
-        } else if (hour >= 11 && hour < 16) {
-            selectedCategory = "Lunch";
-        } else {
-            selectedCategory = "Dinner";
-        }
         return view;
     }
 
-    private void sendSearchQueryToChild(String query) {
-        Fragment activeFragment = getChildFragmentManager()
-                .findFragmentById(R.id.fragmentContainer);
+    // ================================
+    //  LOAD DIARY FROM API
+    // ================================
+    private void loadTodayDiaryCountFromAPI() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        int userId = Integer.valueOf(new UserPreferences(requireContext()).getUserId());
 
-        if (activeFragment instanceof Searchable) {
-            ((Searchable) activeFragment).onSearchQuery(query);
+        DiaryApiService api = RetrofitClient.getInstance().create(DiaryApiService.class);
+
+        api.getDiaryByDate(userId, today).enqueue(new Callback<DiaryApiService.DiaryResponse>() {
+            @Override
+            public void onResponse(Call<DiaryApiService.DiaryResponse> call, Response<DiaryApiService.DiaryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    apiDiaryCount = response.body().data.size();
+                }
+                updateDailyCountDisplay();
+            }
+
+            @Override
+            public void onFailure(Call<DiaryApiService.DiaryResponse> call, Throwable t) {
+                updateDailyCountDisplay();
+            }
+        });
+    }
+
+    // Total = API + Temp
+    private void updateDailyCountDisplay() {
+//        int tempCount = DiaryTempStore.getInstance().getAll().size();
+
+        if (apiDiaryCount == 0) {
+            tvDailyCount.setVisibility(View.GONE);
+        } else {
+            tvDailyCount.setVisibility(View.VISIBLE);
+            tvDailyCount.setText(
+                    getString(R.string.action_today_logged_meal) +
+                            " " + (apiDiaryCount > 99 ? "99+" : apiDiaryCount)
+            );
         }
     }
 
+    // ================================
+    //  SAVE TO DIARY (ONLINE or TEMP)
+    // ================================
+    protected void saveToDiary(Object item, String type) {
 
-    private void openCreateMeal() {
-        // Jika mau buka Activity
-        Intent intent = new Intent(getContext(), CreateMyMealActivity.class);
-        startActivity(intent);
+        // Get category based on time
+        String category = getCurrentCategory();
+        String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        int userId = Integer.parseInt(new UserPreferences(requireContext()).getUserId());
+
+        DiaryModel payload;
+
+        if (type.equals("meal")) {
+            MealModel m = (MealModel) item;
+
+            payload = new DiaryModel(
+                    null,
+                    null,
+                    userId,
+                    m.getId(),
+                    null,
+                    date,
+                    category
+            );
+
+        } else { // FOOD
+            FoodModel f = (FoodModel) item;
+
+            payload = new DiaryModel(
+                    null,
+                    null,
+                    userId,
+                    null,
+                    f.getId(),
+                    date,
+                    category
+            );
+        }
+
+        sendToDiaryAPI(payload);
+    }
+
+    // Send to API
+    private void sendToDiaryAPI(DiaryModel payload) {
+        DiaryApiService api = RetrofitClient.getInstance().create(DiaryApiService.class);
+
+        api.createDiary(payload).enqueue(new Callback<DiaryApiService.ApiResponse>() {
+            @Override
+            public void onResponse(Call<DiaryApiService.ApiResponse> call, Response<DiaryApiService.ApiResponse> response) {
+                if (response.isSuccessful()) {
+                    apiDiaryCount++;
+                    updateDailyCountDisplay();
+                    Toast.makeText(getContext(), "Saved to diary!", Toast.LENGTH_SHORT).show();
+                } else {
+                    saveToTemp(payload);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DiaryApiService.ApiResponse> call, Throwable t) {
+                saveToTemp(payload);
+            }
+        });
+    }
+
+    // If API fails → Save temporarily
+    private void saveToTemp(DiaryModel payload) {
+//        DiaryTempStore.getInstance().addItem(payload);
+        updateDailyCountDisplay();
+        Toast.makeText(getContext(), "Offline saved. Will sync later.", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getCurrentCategory() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (hour >= 4 && hour < 11) return "Breakfast";
+        if (hour >= 11 && hour < 16) return "Lunch";
+        return "Dinner";
+    }
+
+    private void sendSearchQueryToChild(String query) {
+        Fragment frag = getChildFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (frag instanceof Searchable) ((Searchable) frag).onSearchQuery(query);
     }
 
     private void replaceFragment(Fragment fragment) {
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+    }
+
+    public interface Searchable {
+        void onSearchQuery(String query);
     }
 
     private void activateAll() {
@@ -152,75 +243,4 @@ public class LogFoodFragment extends Fragment {
         indicatorAll.setBackgroundColor(Color.parseColor("#D3D3D3"));
         indicatorMyMeals.setBackgroundColor(Color.parseColor("#0F9E99"));
     }
-    protected void saveToDiary(Object item, String type) {
-
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        String name = "";
-        double calories = 0, carbs = 0, protein = 0, fat = 0;
-
-        DiaryItemModel diaryItem;
-
-        if (type.equals("meal")) {
-
-            MealModel m = (MealModel) item;
-
-            name = m.getMealsName();
-            calories = m.getCalories();
-            carbs = m.getCarbs();
-            protein = m.getProtein();
-            fat = m.getFat();
-
-            diaryItem = new DiaryItemModel(
-                    name, calories, carbs, protein, fat, type, time
-            );
-
-            // Set MEAL ID supaya bisa dikirim ke API diary
-            diaryItem.setMealId(m.getId());
-
-        } else if (type.equals("food")) {
-
-            FoodModel ing = (FoodModel) item;
-
-            name = ing.getFoodsName();
-            calories = ing.getCaloriesPerUnit();
-
-            diaryItem = new DiaryItemModel(
-                    name, calories, carbs, protein, fat, "food", time
-            );
-
-            // Set FOOD ID
-            diaryItem.setFoodId(ing.getId());
-        }
-        else {
-            // Fallback
-            Toast.makeText(getContext(), "Unknown diary type", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // SAVE IN TEMPORARY STORE
-        DiaryTempStore.getInstance().addItem(diaryItem);
-
-        Toast.makeText(getContext(), "Diary Saved.", Toast.LENGTH_SHORT).show();
-
-        updateFabVisibility();
-    }
-
-    private void updateFabVisibility() {
-        int count = DiaryTempStore.getInstance().getAll().size();
-
-        if (count == 0) {
-            fab.hide();
-            fabBadge.setVisibility(View.GONE);
-        } else {
-            fab.show();
-
-            fabBadge.setVisibility(View.VISIBLE);
-            fabBadge.setText(count > 99 ? "99+" : String.valueOf(count));
-        }
-    }
-    public interface Searchable {
-        void onSearchQuery(String query);
-    }
-
 }

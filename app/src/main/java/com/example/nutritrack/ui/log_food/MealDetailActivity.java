@@ -10,7 +10,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.nutritrack.R;
-import com.example.nutritrack.data.model.DiaryItemModel;
+import com.example.nutritrack.data.model.DiaryDetail;
 import com.example.nutritrack.data.model.FoodModel;
 import com.example.nutritrack.data.model.MealModel;
 import com.example.nutritrack.data.service.DiaryTempStore;
@@ -50,7 +50,7 @@ public class MealDetailActivity extends AppCompatActivity {
         TextView ingredientsList = findViewById(R.id.ingredientsList);
 
         Button addButton = findViewById(R.id.addButton);
-        ImageView favIcon = findViewById(R.id.favoriteIcon);
+//        ImageView favIcon = findViewById(R.id.favoriteIcon);
 
 
         // ======= APPLY DATA =======
@@ -89,14 +89,14 @@ public class MealDetailActivity extends AppCompatActivity {
 
 
         // ======= FAVORITE TOGGLE =======
-        favIcon.setOnClickListener(v -> {
-            isFavorite = !isFavorite;
-            favIcon.setImageResource(
-                    isFavorite ?
-                            android.R.drawable.btn_star_big_on :
-                            android.R.drawable.btn_star_big_off
-            );
-        });
+//        favIcon.setOnClickListener(v -> {
+//            isFavorite = !isFavorite;
+//            favIcon.setImageResource(
+//                    isFavorite ?
+//                            android.R.drawable.btn_star_big_on :
+//                            android.R.drawable.btn_star_big_off
+//            );
+//        });
 
 
         // ======= ADD BUTTON ACTION =======
@@ -115,7 +115,7 @@ public class MealDetailActivity extends AppCompatActivity {
         String name = "";
         double calories = 0, carbs = 0, protein = 0, fat = 0;
 
-        DiaryItemModel diaryItem;
+        DiaryDetail diaryItem;
 
         if (type.equals("meal")) {
 
@@ -127,7 +127,7 @@ public class MealDetailActivity extends AppCompatActivity {
             protein = m.getProtein();
             fat = m.getFat();
 
-            diaryItem = new DiaryItemModel(
+            diaryItem = new DiaryDetail(
                     name, calories, carbs, protein, fat, type, time
             );
 
@@ -141,7 +141,7 @@ public class MealDetailActivity extends AppCompatActivity {
             name = ing.getFoodsName();
             calories = ing.getCaloriesPerUnit();
 
-            diaryItem = new DiaryItemModel(
+            diaryItem = new DiaryDetail(
                     name, calories, carbs, protein, fat, "food", time
             );
 
@@ -153,7 +153,8 @@ public class MealDetailActivity extends AppCompatActivity {
         }
 
         // Save into temporary store
-        DiaryTempStore.getInstance().addItem(diaryItem);
+//        DiaryTempStore.getInstance().addItem(diaryItem);
+        // TODO: save meal diary
 
         Toast.makeText(this, "Added to diary!", Toast.LENGTH_SHORT).show();
     }

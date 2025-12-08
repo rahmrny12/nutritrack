@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F9FAFB"
+    android:background="@color/app_background"
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
@@ -71,8 +71,7 @@
         <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="3dp"
+            style="@style/RoundedCardView"
             android:layout_marginBottom="16dp"
             android:layout_marginHorizontal="12dp">
             <LinearLayout

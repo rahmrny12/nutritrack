@@ -12,6 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/app_background</item>
+        <item name="android:colorBackground">@color/app_background</item>
     </style>
     <!-- Base application theme. -->
     <style name="Base.Theme.NutriTrack" parent="Theme.Material3.DayNight.NoActionBar">
@@ -30,4 +32,6 @@
         <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
         <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
+
+    <color name="app_background">#ffffff</color>
 </resources>
