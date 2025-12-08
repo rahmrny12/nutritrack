@@ -17,6 +17,8 @@ import com.example.nutritrack.data.model.HealthResponse;
 import com.example.nutritrack.data.service.HealthApiService;
 import com.example.nutritrack.data.service.RetrofitClient;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -92,7 +94,7 @@ public class BMIResultFragment extends Fragment {
                 HealthResponse.User user = response.body().data.user;
 
                 animateBMI(user.bmi);
-                txtCategory.setText(user.bmiCategory);
+                txtCategory.setText(user.bmiCategory.toUpperCase(new Locale("id", "ID")));
             }
 
             @Override

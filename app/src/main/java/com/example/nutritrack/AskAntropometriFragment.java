@@ -1,5 +1,6 @@
 package com.example.nutritrack;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +30,8 @@ public class AskAntropometriFragment extends Fragment {
     private EditText inputHeight, inputWeight, inputAge, inputWaist;
     private String userId;
     private Spinner spinnerGender;
+    private Dialog loadingDialog;
+
 
     public AskAntropometriFragment() {}
 
@@ -75,6 +79,40 @@ public class AskAntropometriFragment extends Fragment {
         return view;
     }
 
+    private void showLoadingDialog() {
+        if (loadingDialog == null) {
+            loadingDialog = new Dialog(requireContext());
+            loadingDialog.setContentView(R.layout.dialog_loading);
+            loadingDialog.setCancelable(false);
+            loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        loadingDialog.show();
+    }
+
+    private void showRetryDialog(String message, Runnable retryAction) {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_error_retry);
+        dialog.setCancelable(true);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        TextView errorText = dialog.findViewById(R.id.errorText);
+        Button btnRetry = dialog.findViewById(R.id.btnRetry);
+
+        errorText.setText(message);
+
+        btnRetry.setOnClickListener(v -> {
+            dialog.dismiss();
+            retryAction.run();   // <-- Ini menjalankan ulang fetch atau update
+        });
+
+        dialog.show();
+    }
+
+    private void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
 
     /* ============================================================
        FETCH AND AUTO-FILL USER DATA
@@ -82,6 +120,8 @@ public class AskAntropometriFragment extends Fragment {
     private void fetchAndFill(ArrayAdapter genderAdapter, String[] genderValues) {
 
         HealthApiService api = RetrofitClient.getInstance().create(HealthApiService.class);
+
+        showLoadingDialog();
 
         api.getHealth(userId).enqueue(new Callback<HealthResponse>() {
             @Override
@@ -114,12 +154,16 @@ public class AskAntropometriFragment extends Fragment {
                     }
                 }
 
-
+                hideLoadingDialog();
             }
 
             @Override
             public void onFailure(Call<HealthResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
+                hideLoadingDialog();
+
+                showRetryDialog("Jaringan Bermasalah.\nSilahkan coba kembali.", () -> {
+                    fetchAndFill(genderAdapter, genderValues); // Retry
+                });
             }
         });
     }

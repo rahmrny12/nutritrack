@@ -68,33 +68,52 @@
             android:overScrollMode="never"
             android:layout_marginVertical="8dp" />
 
-        <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/RoundedCardView"
-            android:layout_marginBottom="16dp"
-            android:layout_marginHorizontal="12dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/homeCarousel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"/>
+            android:layout_height="wrap_content">
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/carouselDots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="8dp"
-                    app:tabIndicatorHeight="0dp"
-                    android:background="@android:color/transparent"
-                    app:tabIndicator="@null" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            <!-- 🎯 GOAL CARD ASLI -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/goalCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/RoundedCardView"
+                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/homeCarousel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"/>
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/carouselDots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="8dp"
+                        app:tabIndicatorHeight="0dp"
+                        android:background="@android:color/transparent"
+                        app:tabIndicator="@null" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 🦴 SKELETON DI ATAS GOAL CARD -->
+            <View
+                android:id="@+id/goalSkeleton"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_skeleton" />
+        </FrameLayout>
+
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/rekomendasiPager"

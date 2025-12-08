@@ -77,6 +77,8 @@ public class HomeFragment extends Fragment {
     private JsonObject recommendationObj;
     private JsonArray rekomendasi;
 
+    private View goalSkeleton;
+    private View goalCard;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -84,6 +86,9 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        goalSkeleton = binding.goalSkeleton;
+        goalCard = binding.goalCard;
 
         UserPreferences userPrefs = new UserPreferences(requireContext());
         String recJson = userPrefs.getRecommendationJson();   // bisa "null", "", atau json valid
@@ -124,6 +129,7 @@ public class HomeFragment extends Fragment {
         userId = userPrefs.getUserId();
         binding.tvHello.setText(userPrefs.getUserName());
 
+        setGoalLoading(true);
 
         setupDateSelector();
         setupCarousel();
@@ -137,6 +143,19 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    private void setGoalLoading(boolean isLoading) {
+        if (goalSkeleton == null || goalCard == null) return;
+
+        if (isLoading) {
+            goalSkeleton.setVisibility(View.VISIBLE);
+            goalCard.setAlpha(0f);          // atau goalCard.setVisibility(View.INVISIBLE);
+        } else {
+            goalSkeleton.setVisibility(View.GONE);
+            goalCard.setAlpha(1f);          // atau goalCard.setVisibility(View.VISIBLE);
+        }
+    }
+
+
     private void loadArticles() {
 
         ArticleApiService api = RetrofitClient.getInstance().create(ArticleApiService.class);
@@ -145,13 +164,18 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(Call<List<ArticleModel>> call, Response<List<ArticleModel>> response) {
 
-                if (!response.isSuccessful() || response.body() == null) return;
+                if (!response.isSuccessful() || response.body() == null) {
+                    setGoalLoading(false); // gagal, tapi tetap hilangkan skeleton
+                    return;
+                }
 
                 articleContainer.removeAllViews(); // clear old items
 
                 for (ArticleModel article : response.body()) {
                     addArticleItem(article);
                 }
+
+                setGoalLoading(false);
             }
 
             private void addArticleItem(ArticleModel article) {
@@ -181,7 +205,9 @@ public class HomeFragment extends Fragment {
 
 
             @Override
-            public void onFailure(Call<List<ArticleModel>> call, Throwable t) {}
+            public void onFailure(Call<List<ArticleModel>> call, Throwable t) {
+                setGoalLoading(false);
+            }
         });
     }
 
